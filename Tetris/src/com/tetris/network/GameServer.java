@@ -13,8 +13,8 @@ class GameHandler extends Thread {
 	private int rank;
 
 	private Socket socket;
-	private ObjectInputStream ois; // 객체단위 입출력
-	private ObjectOutputStream oos;
+	private ObjectInputStream ois; 
+	private ObjectOutputStream oos; // 객체단위 입출력
 	private String ip;
 	private String name;
 	private int index;
