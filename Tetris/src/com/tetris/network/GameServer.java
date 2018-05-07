@@ -36,7 +36,7 @@ class GameHandler extends Thread {
 		}
 
 		try {
-			DataShip data = (DataShip) ois.readObject(); // 역직렬화
+			DataShip data = (DataShip) ois.readObject(); // 역직렬화 -> 객체의 내용을 바이트 단위로 나눈 것을 다시 합침
 			ip = data.getIp();
 			name = data.getName(); // 필드초기화
 
@@ -51,11 +51,11 @@ class GameHandler extends Thread {
 
 	}// GameHandler
 
-	public void run() {
+	public void run() { //새로운 스레드가 할 일 기술
 		DataShip data = null;
 		while (true) {
 			try {
-				data = (DataShip) ois.readObject();
+				data = (DataShip) ois.readObject(); //역직렬화
 			} catch (IOException e) {
 				e.printStackTrace();
 				break;
@@ -63,10 +63,10 @@ class GameHandler extends Thread {
 				e.printStackTrace();
 			}
 
-			if (data == null)
+			if (data == null) //null이라면 다시 읽음
 				continue;
 
-			if (data.getCommand() == DataShip.CLOSE_NETWORK) {
+			if (data.getCommand() == DataShip.CLOSE_NETWORK) { //연결을 끊는 상황 -> 모두에게 알림
 				printSystemMessage("<" + index + "P> EXIT");
 				printMessage(ip + ":" + name + "is out");
 				closeNetwork();
@@ -105,13 +105,13 @@ class GameHandler extends Thread {
 
 	}// run
 
-	public void printMessage(String msg) { // 모든 사용자에게 사용자 관련 정보 전달
-		DataShip data = new DataShip(DataShip.PRINT_MESSAGE); // cmd 설정
+	public void printMessage(String msg) { // 아래박스에 메세지 전달
+		DataShip data = new DataShip(DataShip.PRINT_MESSAGE); 
 		data.setMsg(name + "(" + index + "P)>" + msg);
 		broadcast(data);
 	}
 
-	public void closeNetwork() {
+	public void closeNetwork() { //리스트에서 제거
 		DataShip data = new DataShip(DataShip.CLOSE_NETWORK);
 		indexList.add(index);
 
@@ -128,7 +128,7 @@ class GameHandler extends Thread {
 		send(data);
 	}
 
-	public void exitServer() {
+	public void exitServer() { 
 		DataShip data = new DataShip(DataShip.SERVER_EXIT);
 		broadcast(data);
 	}
@@ -148,8 +148,8 @@ class GameHandler extends Thread {
 		}
 	}
 
-	public void printSystemOpenMessage() { // 리스트에 담긴 각 사용자의 정보 출력
-		DataShip data = new DataShip(DataShip.PRINT_SYSTEM_MESSAGE); // cmd에 관련 정보 전달
+	public void printSystemOpenMessage() { //처음 open했을 때 메세지 전달
+		DataShip data = new DataShip(DataShip.PRINT_SYSTEM_MESSAGE); //시스템 메세지 창에 출력
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < list.size(); i++) { // list에 담긴 정보를 버퍼에 추가
 			sb.append("<" + list.get(i).index + "P> " + list.get(i).ip + ":" + list.get(i).name);
@@ -160,8 +160,8 @@ class GameHandler extends Thread {
 		send(data); // 출력
 	}
 
-	public void printSystemAddMemberMessage() {
-		DataShip data = new DataShip(DataShip.PRINT_SYSTEM_MESSAGE);
+	public void printSystemAddMemberMessage() { //클라이언트 추가 시
+		DataShip data = new DataShip(DataShip.PRINT_SYSTEM_MESSAGE); //시스템 메세지 창에 출력
 		data.setMsg("<" + index + "P> " + ip + ":" + name);
 		broadcast(data);
 	}
@@ -172,7 +172,7 @@ class GameHandler extends Thread {
 		broadcast(data);
 	}
 
-	public void printSystemMessage(String msg) {
+	public void printSystemMessage(String msg) { //시스템메세지 공간에 전체 공지
 		DataShip data = new DataShip(DataShip.PRINT_SYSTEM_MESSAGE);
 		data.setMsg(msg);
 		broadcast(data);
@@ -220,7 +220,7 @@ class GameHandler extends Thread {
 		broadcast(data);
 	}
 
-	private void send(DataShip dataShip) { // 출력 메소드
+	private void send(DataShip dataShip) { //객체 하나에만 dataShip 출력
 		try {
 			oos.writeObject(dataShip); // DataShip 객체 출력
 			oos.flush(); // 버퍼의 모든 내용 출력
@@ -229,8 +229,8 @@ class GameHandler extends Thread {
 		}
 	}
 
-	private void broadcast(DataShip dataShip) {
-		for (int i = 0; i < list.size(); i++) { // 각 handler마다 dataShip 출력
+	private void broadcast(DataShip dataShip) { //list에 있는 handler마다 dataShip 출력
+		for (int i = 0; i < list.size(); i++) { 
 			GameHandler handler = list.get(i);
 			if (handler != null) {
 				try {
