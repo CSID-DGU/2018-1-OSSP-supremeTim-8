@@ -20,7 +20,7 @@ class GameHandler extends Thread {
 	private int index; // 사용자 번호
 	private int totalAdd = 0; // 상대에게 추가한 블럭 수
 
-	private ArrayList<GameHandler> list; 
+	private ArrayList<GameHandler> list;
 	private ArrayList<Integer> indexList;
 
 	public GameHandler(Socket socket, ArrayList<GameHandler> list, int index, ArrayList<Integer> indexList) {
@@ -85,7 +85,7 @@ class GameHandler extends Thread {
 				setIndex();
 			} else if (data.getCommand() == DataShip.GAME_OVER) {
 				rank = maxRank--; // 현재 핸들러 개수를 rank에 저장하고 현재 핸들러 개수 감소
-				gameover(rank); 
+				gameover(rank);
 			} else if (data.getCommand() == DataShip.PRINT_MESSAGE) {
 				printMessage(data.getMsg());
 			} else if (data.getCommand() == DataShip.PRINT_SYSTEM_MESSAGE) {
@@ -267,36 +267,36 @@ public class GameServer implements Runnable {
 	private ArrayList<Integer> indexList = new ArrayList<Integer>();
 	private int index = 1;
 
-	public GameServer(int port) {
+	public GameServer(int port) { // 생성자
 		try {
-			ss = new ServerSocket(port);
+			ss = new ServerSocket(port); // 포트번호로 new 할당
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}// GameServer()
 
-	public void startServer() {
+	public void startServer() { // 서버 시작
 		System.out.println("server is working");
 		index = 1;
-		new Thread(this).start();
+		new Thread(this).start(); // 서버의 run 메소드 작동
 	}
 
 	@Override
 	public void run() {
 		try {
 			while (true) {
-				synchronized (GameServer.class) {
+				synchronized (GameServer.class) { // 다른스레드에서 접근 방지
 
-					Socket socket = ss.accept();
+					Socket socket = ss.accept(); // 클라이언트의 연결을 기다림 -> 클라이언트 객체 생성 시 클라이언트의 소켓 반환
 					int index;
-					if (indexList.size() > 0) {
+					if (indexList.size() > 0) { // 하나라도 존재하면 ??
 						index = indexList.get(0);
 						indexList.remove(0);
 					} else
 						index = this.index++;
-					GameHandler handler = new GameHandler(socket, list, index, indexList);
-					list.add(handler);
-					handler.start();
+					GameHandler handler = new GameHandler(socket, list, index, indexList); // 서버의 핸들러 작성
+					list.add(handler); // 핸들러 추가
+					handler.start(); // 게임핸들러의 run 메소드 작동
 
 				}
 			} // while(true)
