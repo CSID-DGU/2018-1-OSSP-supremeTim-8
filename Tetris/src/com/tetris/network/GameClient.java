@@ -52,18 +52,18 @@ public class GameClient implements Runnable {
 		DataShip data = new DataShip();
 		data.setIp(ip);
 		data.setName(name);
-		send(data);
+		send(data); // 핸들러 생성자에서 필드 초기화하기 위해 보냄
 
-		printSystemMessage(DataShip.PRINT_SYSTEM_OPEN_MESSAGE);
+		printSystemMessage(DataShip.PRINT_SYSTEM_OPEN_MESSAGE); // 새 클라이언트 오픈했다고 알림
 
-		printSystemMessage(DataShip.PRINT_SYSTEM_ADDMEMBER_MESSAGE);
+		printSystemMessage(DataShip.PRINT_SYSTEM_ADDMEMBER_MESSAGE); // 추가 클라이언트 알림 -> 핸들러 스레드가 시작하고 읽음
 
-		setIndex(); // ???
+		setIndex(); // 클라이언트에게 사용자 번호 부여(ex. 1P)
 
 		Thread t = new Thread(this);
 		t.start(); // 스레드 시작
 
-		return true;
+		return true; // 처음엔 여기서부터 서버, 서버 클라이언트, 서버 클라이언트 핸들러의 스레드 실행 시작 / 이 후 클라이언트 추가되면 계속 스레드 추가
 	}
 
 	public void run() {

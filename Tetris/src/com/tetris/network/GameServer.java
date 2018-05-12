@@ -36,13 +36,13 @@ class GameHandler extends Thread {
 		}
 
 		try {
-			DataShip data = (DataShip) ois.readObject(); // 역직렬화 -> 객체의 내용을 바이트 단위로 나눈 것을 다시 합침
+			DataShip data = (DataShip) ois.readObject(); // excute()에서 send한 것을 읽음
 			ip = data.getIp();
 			name = data.getName(); // 필드초기화
 
-			data = (DataShip) ois.readObject();
+			data = (DataShip) ois.readObject(); // 클라이언트가 생성되었다는 것을 인지
 			printSystemOpenMessage(); // 처음 open하고 메세지 출력
-			printMessage(ip + ":" + name + "is in"); // 사용자 관련 메세지 출력
+			printMessage(ip + ":" + name + "is in"); // 사용자 관련 메세지 출력 -> 처음엔 작동X
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -51,7 +51,7 @@ class GameHandler extends Thread {
 
 	}// GameHandler
 
-	public void run() { // 새로운 스레드가 할 일 기술
+	public void run() { 
 		DataShip data = null;
 		while (true) {
 			try {
@@ -149,9 +149,9 @@ class GameHandler extends Thread {
 	}
 
 	public void printSystemOpenMessage() { // 처음 open했을 때 메세지 전달
-		DataShip data = new DataShip(DataShip.PRINT_SYSTEM_MESSAGE); // 시스템 메세지 창에 출력
+		DataShip data = new DataShip(DataShip.PRINT_SYSTEM_MESSAGE);
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < list.size(); i++) { // list에 담긴 정보를 버퍼에 추가
+		for (int i = 0; i < list.size(); i++) { // list에 담긴 정보를 버퍼에 추가 -> 맨 처음엔 list가 비어있으므로 출력X
 			sb.append("<" + list.get(i).index + "P> " + list.get(i).ip + ":" + list.get(i).name);
 			if (i < list.size() - 1)
 				sb.append("\n");
@@ -263,7 +263,7 @@ class GameHandler extends Thread {
 
 public class GameServer implements Runnable {
 	private ServerSocket ss;
-	private ArrayList<GameHandler> list = new ArrayList<GameHandler>();
+	private ArrayList<GameHandler> list = new ArrayList<GameHandler>(); // 클라이언트 집합
 	private ArrayList<Integer> indexList = new ArrayList<Integer>();
 	private int index = 1;
 
@@ -292,9 +292,9 @@ public class GameServer implements Runnable {
 					if (indexList.size() > 0) { // 하나라도 존재하면 ??
 						index = indexList.get(0);
 						indexList.remove(0);
-					} else
+					} else // 맨 처음 생기는 클라이언트(서버)의 인덱스는 1
 						index = this.index++;
-					GameHandler handler = new GameHandler(socket, list, index, indexList); // 서버의 핸들러 작성
+					GameHandler handler = new GameHandler(socket, list, index, indexList); // 클라이언트 핸들러 작성
 					list.add(handler); // 핸들러 추가
 					handler.start(); // 게임핸들러의 run 메소드 작동
 
