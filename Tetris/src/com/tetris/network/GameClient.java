@@ -9,123 +9,133 @@ import java.net.UnknownHostException;
 
 import com.tetris.window.Tetris;
 
-public class GameClient implements Runnable {
+
+public class GameClient implements Runnable{
 	private Tetris tetris;
 	private Socket socket;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
+
 
 	private String ip;
 	private int port;
 	private String name;
 	private int index;
 	private boolean isPlay;
+	
 
-	public GameClient(Tetris tetris, String ip, int port, String name) { // 생성자
+	public GameClient(Tetris tetris,String ip, int port, String name){
 		this.tetris = tetris;
 		this.ip = ip;
 		this.port = port;
 		this.name = name;
-	}// GameClient()
+	}//GameClient()
 
-	public boolean start() {
-		return this.execute();
+	public boolean start(){
+		return this.execute();	
 	}
 
-	public boolean execute() {
-		try {
-			socket = new Socket(ip, port);
-			ip = InetAddress.getLocalHost().getHostAddress(); // IP 주소 얻기
+	
+	public boolean execute(){
+		try{
+			socket = new Socket(ip,port);
+			ip = InetAddress.getLocalHost().getHostAddress();
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
 			System.out.println("client is working");
-		} catch (UnknownHostException e) {
+		}catch(UnknownHostException e){
 			e.printStackTrace();
 			return false;
-		} catch (IOException e) {
+		}catch(IOException e){
 			e.printStackTrace();
 			return false;
 		}
 
-		tetris.getBoard().clearMessage(); // 모든 창 초기화
+		tetris.getBoard().clearMessage();
+		
 
 		DataShip data = new DataShip();
 		data.setIp(ip);
 		data.setName(name);
-		send(data); // 핸들러 생성자에서 필드 초기화하기 위해 보냄
+		send(data);
+		
 
-		printSystemMessage(DataShip.PRINT_SYSTEM_OPEN_MESSAGE); // 새 클라이언트 오픈했다고 알림
+		printSystemMessage(DataShip.PRINT_SYSTEM_OPEN_MESSAGE);
 
-		printSystemMessage(DataShip.PRINT_SYSTEM_ADDMEMBER_MESSAGE); // 추가 클라이언트 알림 -> 핸들러 스레드가 시작하고 읽음
+		printSystemMessage(DataShip.PRINT_SYSTEM_ADDMEMBER_MESSAGE);
 
-		setIndex(); // 클라이언트에게 사용자 번호 부여(ex. 1P)
+		setIndex();
 
 		Thread t = new Thread(this);
-		t.start(); // 스레드 시작
-
-		return true; // 처음엔 여기서부터 서버, 서버 클라이언트, 서버 클라이언트 핸들러의 스레드 실행 시작 / 이 후 클라이언트 추가되면 계속 스레드 추가
+		t.start();
+		
+		return true;
 	}
 
-	public void run() {
-		DataShip data = null;
-		while (true) {
-			try {
-				data = (DataShip) ois.readObject();
-			} catch (IOException e) {
-				e.printStackTrace();
-				break;
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
+	
 
-			if (data == null)
-				continue;
-			if (data.getCommand() == DataShip.CLOSE_NETWORK) { // 연결종료
+	public void run(){
+		DataShip data = null;
+		while(true){
+			try{
+				data = (DataShip)ois.readObject(); 
+			}catch(IOException e){e.printStackTrace();break;
+			}catch(ClassNotFoundException e){e.printStackTrace();}
+
+
+
+			if(data == null) continue;
+			if(data.getCommand() == DataShip.CLOSE_NETWORK){
 				reCloseNetwork();
 				break;
-			} else if (data.getCommand() == DataShip.SERVER_EXIT) { // cmd 정보 바꾼 뒤 연결 종료
+			}else if(data.getCommand() == DataShip.SERVER_EXIT){
 				closeNetwork(false);
-			} else if (data.getCommand() == DataShip.GAME_START) { // 게임 시작
+			}else if(data.getCommand() == DataShip.GAME_START){
 				reGameStart(data.isPlay(), data.getMsg(), data.getSpeed());
-			} else if (data.getCommand() == DataShip.ADD_BLOCK) { // 블럭 추가
-				if (isPlay)
-					reAddBlock(data.getMsg(), data.getNumOfBlock(), data.getIndex());
-			} else if (data.getCommand() == DataShip.SET_INDEX) {
+			}else if(data.getCommand() == DataShip.ADD_BLOCK){
+				if(isPlay)reAddBlock(data.getMsg(), data.getNumOfBlock(), data.getIndex());
+			}else if(data.getCommand() == DataShip.SET_INDEX){
 				reSetIndex(data.getIndex());
-			} else if (data.getCommand() == DataShip.GAME_OVER) { // 게임 종료
-				if (index == data.getIndex())
-					isPlay = data.isPlay(); // 현재 플레이 상태 가져옴
+			}else if(data.getCommand() == DataShip.GAME_OVER){
+				if(index == data.getIndex()) isPlay = data.isPlay();
 				reGameover(data.getMsg(), data.getTotalAdd());
-			} else if (data.getCommand() == DataShip.PRINT_MESSAGE) {
+			}else if(data.getCommand() == DataShip.PRINT_MESSAGE){
 				rePrintMessage(data.getMsg());
-			} else if (data.getCommand() == DataShip.PRINT_SYSTEM_MESSAGE) {
+			}else if(data.getCommand() == DataShip.PRINT_SYSTEM_MESSAGE){
 				rePrintSystemMessage(data.getMsg());
-			} else if (data.getCommand() == DataShip.GAME_WIN) { // 이긴 경우
-				rePrintSystemMessage(data.getMsg() + "\nTOTAL ADD : " + data.getTotalAdd());
+			}else if(data.getCommand() == DataShip.GAME_WIN){
+				rePrintSystemMessage(data.getMsg()+"\nTOTAL ADD : "+data.getTotalAdd());
 				tetris.getBoard().setPlay(false);
 			}
-
+			
 		}
-
+		
+		
 	}
 
-	public void send(DataShip data) {
-		try {
-			oos.writeObject(data);
+
+
+	public void send(DataShip data){
+		try{
+			oos.writeObject(data); 
 			oos.flush();
-		} catch (IOException e) {
+		}catch(IOException e){
 			e.printStackTrace();
 		}
 	}
+	
+	
+	
+	
+	
 
-	public void closeNetwork(boolean isServer) {
+	public void closeNetwork(boolean isServer){
 		DataShip data = new DataShip(DataShip.CLOSE_NETWORK);
-		if (isServer)
-			data.setCommand(DataShip.SERVER_EXIT);
+		if(isServer) data.setCommand(DataShip.SERVER_EXIT);
 		send(data);
 	}
 
-	public void reCloseNetwork() {
+	public void reCloseNetwork(){
 
 		tetris.closeNetwork();
 		try {
@@ -136,70 +146,65 @@ public class GameClient implements Runnable {
 			e.printStackTrace();
 		}
 	}
+	
 
-	public void gameStart(int speed) {
+	public void gameStart(int speed){
 		DataShip data = new DataShip(DataShip.GAME_START);
 		data.setSpeed(speed);
 		send(data);
 	}
-
-	public void reGameStart(boolean isPlay, String msg, int speed) {
+	
+	public void reGameStart(boolean isPlay, String msg, int speed){
 		this.isPlay = isPlay;
-		tetris.gameStart(speed); // 속도를 기반으로 게임 시작 -> 여러가지 설정
+		tetris.gameStart(speed);
 		rePrintSystemMessage(msg);
 	}
-
-	public void printSystemMessage(int cmd) {
+	
+	public void printSystemMessage(int cmd){
 		DataShip data = new DataShip(cmd);
 		send(data);
 	}
-
-	public void rePrintSystemMessage(String msg) {
+	
+	public void rePrintSystemMessage(String msg){
 		tetris.printSystemMessage(msg);
 	}
-
-	public void addBlock(int numOfBlock) {
+	public void addBlock(int numOfBlock){
 		DataShip data = new DataShip(DataShip.ADD_BLOCK);
 		data.setNumOfBlock(numOfBlock);
 		send(data);
 	}
-
-	public void reAddBlock(String msg, int numOfBlock, int index) {
-		if (index != this.index)
-			tetris.getBoard().addBlockLine(numOfBlock); // 본인을 제외하고 나머지 블럭 추가
+	public void reAddBlock(String msg, int numOfBlock, int index){
+		if(index != this.index)tetris.getBoard().addBlockLine(numOfBlock);
 		rePrintSystemMessage(msg);
 	}
-
-	public void setIndex() {
+	
+	
+	public void setIndex(){
 		DataShip data = new DataShip(DataShip.SET_INDEX);
 		send(data);
 	}
-
-	public void reSetIndex(int index) {
+	public void reSetIndex(int index){
 		this.index = index;
 	}
+	
 
-	public void gameover() {
+	public void gameover(){
 		DataShip data = new DataShip(DataShip.GAME_OVER);
 		send(data);
 	}
-
-	public void reGameover(String msg, int totalAdd) { // 총 추가한 블럭라인 수 출력
+	public void reGameover(String msg, int totalAdd){
 		tetris.printSystemMessage(msg);
-		tetris.printSystemMessage("TOTAL ADD : " + totalAdd);
+		tetris.printSystemMessage("TOTAL ADD : "+totalAdd);
 	}
-
-	public void printMessage(String msg) {
+	public void printMessage(String msg){
 		DataShip data = new DataShip(DataShip.PRINT_MESSAGE);
 		data.setMsg(msg);
 		send(data);
 	}
-
-	public void rePrintMessage(String msg) {
+	public void rePrintMessage(String msg){
 		tetris.printMessage(msg);
 	}
-
-	public void reChangSpeed(Integer speed) { // 속도변화 메소드
+	public void reChangSpeed(Integer speed) {
 		tetris.changeSpeed(speed);
 	}
 }

@@ -9,16 +9,16 @@ import java.util.ArrayList;
 
 class GameHandler extends Thread {
 	private static boolean isStartGame;
-	private static int maxRank; // 핸들러의 총 개수
-	private int rank; // 순위
+	private static int maxRank;
+	private int rank;
 
 	private Socket socket;
-	private ObjectInputStream ois;
+	private ObjectInputStream ois; 
 	private ObjectOutputStream oos; // 객체단위 입출력
 	private String ip;
 	private String name;
-	private int index; // 사용자 번호
-	private int totalAdd = 0; // 상대에게 추가한 블럭 수
+	private int index;
+	private int totalAdd = 0;
 
 	private ArrayList<GameHandler> list;
 	private ArrayList<Integer> indexList;
@@ -36,13 +36,13 @@ class GameHandler extends Thread {
 		}
 
 		try {
-			DataShip data = (DataShip) ois.readObject(); // excute()에서 send한 것을 읽음
+			DataShip data = (DataShip) ois.readObject(); // 역직렬화
 			ip = data.getIp();
 			name = data.getName(); // 필드초기화
 
-			data = (DataShip) ois.readObject(); // 클라이언트가 생성되었다는 것을 인지
+			data = (DataShip) ois.readObject();
 			printSystemOpenMessage(); // 처음 open하고 메세지 출력
-			printMessage(ip + ":" + name + "is in"); // 사용자 관련 메세지 출력 -> 처음엔 작동X
+			printMessage(ip + ":" + name + "is in"); // 사용자 관련 메세지 출력
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -51,11 +51,11 @@ class GameHandler extends Thread {
 
 	}// GameHandler
 
-	public void run() { 
+	public void run() {
 		DataShip data = null;
 		while (true) {
 			try {
-				data = (DataShip) ois.readObject(); // 역직렬화
+				data = (DataShip) ois.readObject();
 			} catch (IOException e) {
 				e.printStackTrace();
 				break;
@@ -63,10 +63,10 @@ class GameHandler extends Thread {
 				e.printStackTrace();
 			}
 
-			if (data == null) // null이라면 다시 읽음
+			if (data == null)
 				continue;
 
-			if (data.getCommand() == DataShip.CLOSE_NETWORK) { // 연결을 끊는 상황 -> 모두에게 알림
+			if (data.getCommand() == DataShip.CLOSE_NETWORK) {
 				printSystemMessage("<" + index + "P> EXIT");
 				printMessage(ip + ":" + name + "is out");
 				closeNetwork();
@@ -84,7 +84,7 @@ class GameHandler extends Thread {
 			} else if (data.getCommand() == DataShip.SET_INDEX) {
 				setIndex();
 			} else if (data.getCommand() == DataShip.GAME_OVER) {
-				rank = maxRank--; // 현재 핸들러 개수를 rank에 저장하고 현재 핸들러 개수 감소
+				rank = maxRank--;
 				gameover(rank);
 			} else if (data.getCommand() == DataShip.PRINT_MESSAGE) {
 				printMessage(data.getMsg());
@@ -98,20 +98,20 @@ class GameHandler extends Thread {
 			list.remove(this);
 			ois.close();
 			oos.close();
-			socket.close(); // 끝내는 상황
+			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 	}// run
 
-	public void printMessage(String msg) { // 아래박스에 메세지 전달
-		DataShip data = new DataShip(DataShip.PRINT_MESSAGE);
+	public void printMessage(String msg) { // 모든 사용자에게 사용자 관련 정보 전달
+		DataShip data = new DataShip(DataShip.PRINT_MESSAGE); // cmd 설정
 		data.setMsg(name + "(" + index + "P)>" + msg);
 		broadcast(data);
 	}
 
-	public void closeNetwork() { // 연결을 끊는 상황 -> 리스트에서 제거
+	public void closeNetwork() {
 		DataShip data = new DataShip(DataShip.CLOSE_NETWORK);
 		indexList.add(index);
 
@@ -128,30 +128,30 @@ class GameHandler extends Thread {
 		send(data);
 	}
 
-	public void exitServer() { // ?
+	public void exitServer() {
 		DataShip data = new DataShip(DataShip.SERVER_EXIT);
 		broadcast(data);
 	}
 
-	public void gameStart(int speed) { // 게임시작
+	public void gameStart(int speed) {
 		isStartGame = true;
 		totalAdd = 0;
-		maxRank = list.size(); // 핸들러의 개수 반환 -> 의미?
+		maxRank = list.size();
 		DataShip data = new DataShip(DataShip.GAME_START);
-		data.setPlay(true); // 시작 설정
-		data.setSpeed(speed); // 속도 설정
-		data.setMsg("<Game Start>"); // 메세지 설정
-		broadcast(data); // 관련정보 모두 전송
+		data.setPlay(true);
+		data.setSpeed(speed);
+		data.setMsg("<Game Start>");
+		broadcast(data);
 		for (int i = 0; i < list.size(); i++) {
 			GameHandler handler = list.get(i);
-			handler.setRank(0); // 핸들러마다 랭크 0으로 설정
+			handler.setRank(0);
 		}
 	}
 
-	public void printSystemOpenMessage() { // 처음 open했을 때 메세지 전달
-		DataShip data = new DataShip(DataShip.PRINT_SYSTEM_MESSAGE);
+	public void printSystemOpenMessage() { // 리스트에 담긴 각 사용자의 정보 출력
+		DataShip data = new DataShip(DataShip.PRINT_SYSTEM_MESSAGE); // cmd에 관련 정보 전달
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < list.size(); i++) { // list에 담긴 정보를 버퍼에 추가 -> 맨 처음엔 list가 비어있으므로 출력X
+		for (int i = 0; i < list.size(); i++) { // list에 담긴 정보를 버퍼에 추가
 			sb.append("<" + list.get(i).index + "P> " + list.get(i).ip + ":" + list.get(i).name);
 			if (i < list.size() - 1)
 				sb.append("\n");
@@ -160,8 +160,8 @@ class GameHandler extends Thread {
 		send(data); // 출력
 	}
 
-	public void printSystemAddMemberMessage() { // 클라이언트 추가 시
-		DataShip data = new DataShip(DataShip.PRINT_SYSTEM_MESSAGE); // 시스템 메세지 창에 출력
+	public void printSystemAddMemberMessage() {
+		DataShip data = new DataShip(DataShip.PRINT_SYSTEM_MESSAGE);
 		data.setMsg("<" + index + "P> " + ip + ":" + name);
 		broadcast(data);
 	}
@@ -172,18 +172,18 @@ class GameHandler extends Thread {
 		broadcast(data);
 	}
 
-	public void printSystemMessage(String msg) { // 시스템메세지 공간에 전체 공지
+	public void printSystemMessage(String msg) {
 		DataShip data = new DataShip(DataShip.PRINT_SYSTEM_MESSAGE);
 		data.setMsg(msg);
 		broadcast(data);
 	}
 
-	public void addBlock(int numOfBlock) { // 상대에게 추가한 블럭에 관한 메소드
+	public void addBlock(int numOfBlock) {
 		DataShip data = new DataShip(DataShip.ADD_BLOCK);
-		data.setNumOfBlock(numOfBlock); // 블럭 수 설정
-		data.setMsg(index + "P -> ADD:" + numOfBlock); // 관련 메세지 설정
+		data.setNumOfBlock(numOfBlock);
+		data.setMsg(index + "P -> ADD:" + numOfBlock);
 		data.setIndex(index);
-		totalAdd += numOfBlock; // 여태까지 추가한 블럭 수
+		totalAdd += numOfBlock;
 		broadcast(data);
 	}
 
@@ -195,32 +195,32 @@ class GameHandler extends Thread {
 
 	public void gameover(int rank) {
 		DataShip data = new DataShip(DataShip.GAME_OVER);
-		data.setMsg(index + "P -> OVER:" + rank); // 종료되기전까지 있었던 플레이어 수 출력 -> 등수
+		data.setMsg(index + "P -> OVER:" + rank);
 		data.setIndex(index);
 		data.setPlay(false);
 		data.setRank(rank);
 		data.setTotalAdd(totalAdd);
 		broadcast(data);
 
-		if (rank == 2) { // 게임이 끝난 상황
+		if (rank == 2) {
 			isStartGame = false;
 			for (int i = 0; i < list.size(); i++) {
 				GameHandler handler = list.get(i);
-				if (handler.getRank() == 0) { // rank 변하지 않은 상태 -> game over 되지 않은 상태
+				if (handler.getRank() == 0) {
 					handler.win();
 				}
 			}
 		}
 	}
 
-	public void win() { // 이긴 경우
+	public void win() {
 		DataShip data = new DataShip(DataShip.GAME_WIN);
 		data.setMsg(index + "P -> WIN");
 		data.setTotalAdd(totalAdd);
 		broadcast(data);
 	}
 
-	private void send(DataShip dataShip) { // 객체 하나에만 dataShip 출력
+	private void send(DataShip dataShip) { // 출력 메소드
 		try {
 			oos.writeObject(dataShip); // DataShip 객체 출력
 			oos.flush(); // 버퍼의 모든 내용 출력
@@ -229,8 +229,8 @@ class GameHandler extends Thread {
 		}
 	}
 
-	private void broadcast(DataShip dataShip) { // list에 있는 handler마다 dataShip 출력
-		for (int i = 0; i < list.size(); i++) {
+	private void broadcast(DataShip dataShip) {
+		for (int i = 0; i < list.size(); i++) { // 각 handler마다 dataShip 출력
 			GameHandler handler = list.get(i);
 			if (handler != null) {
 				try {
@@ -263,40 +263,40 @@ class GameHandler extends Thread {
 
 public class GameServer implements Runnable {
 	private ServerSocket ss;
-	private ArrayList<GameHandler> list = new ArrayList<GameHandler>(); // 클라이언트 집합
+	private ArrayList<GameHandler> list = new ArrayList<GameHandler>();
 	private ArrayList<Integer> indexList = new ArrayList<Integer>();
 	private int index = 1;
 
-	public GameServer(int port) { // 생성자
+	public GameServer(int port) {
 		try {
-			ss = new ServerSocket(port); // 포트번호로 new 할당
+			ss = new ServerSocket(port);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}// GameServer()
 
-	public void startServer() { // 서버 시작
+	public void startServer() {
 		System.out.println("server is working");
 		index = 1;
-		new Thread(this).start(); // 서버의 run 메소드 작동
+		new Thread(this).start();
 	}
 
 	@Override
 	public void run() {
 		try {
 			while (true) {
-				synchronized (GameServer.class) { // 다른스레드에서 접근 방지
+				synchronized (GameServer.class) {
 
-					Socket socket = ss.accept(); // 클라이언트의 연결을 기다림 -> 클라이언트 객체 생성 시 클라이언트의 소켓 반환
+					Socket socket = ss.accept();
 					int index;
-					if (indexList.size() > 0) { // 하나라도 존재하면 ??
+					if (indexList.size() > 0) {
 						index = indexList.get(0);
 						indexList.remove(0);
-					} else // 맨 처음 생기는 클라이언트(서버)의 인덱스는 1
+					} else
 						index = this.index++;
-					GameHandler handler = new GameHandler(socket, list, index, indexList); // 클라이언트 핸들러 작성
-					list.add(handler); // 핸들러 추가
-					handler.start(); // 게임핸들러의 run 메소드 작동
+					GameHandler handler = new GameHandler(socket, list, index, indexList);
+					list.add(handler);
+					handler.start();
 
 				}
 			} // while(true)

@@ -22,6 +22,7 @@ public class Tetris extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private GameServer server;
 	private GameClient client;
+	/*이부분에서 1p,2p 나누는 창:바꾸는게 안된다면 기능을 키고끄느 방법으로 */
 	private TetrisBoard board = new TetrisBoard(this,client);
 	private JMenuItem itemServerStart = new JMenuItem("서버로 접속하기");
 	private JMenuItem itemClientStart = new JMenuItem("클라이언트로 접속하기");
@@ -41,13 +42,13 @@ public class Tetris extends JFrame implements ActionListener{
 		
 		this.setJMenuBar(mnBar);
 		
-		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);//closing event로 
 		this.getContentPane().add(board);
 		
 		this.setResizable(false);
 		this.pack();
-		Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-		this.setLocation((size.width-this.getWidth())/2,(size.height-this.getHeight())/2);
+		Dimension size = Toolkit.getDefaultToolkit().getScreenSize(); //스크린전체사이즈
+		this.setLocation((size.width-this.getWidth())/2,(size.height-this.getHeight())/2); //스크린 중앙에 위치 
 		this.setVisible(true);
 		
 		itemServerStart.addActionListener(this);
@@ -55,9 +56,8 @@ public class Tetris extends JFrame implements ActionListener{
 		this.addWindowListener(new WindowAdapter() {
 
 			@Override
-			public void windowClosing(WindowEvent e) {
+			public void windowClosing(WindowEvent e) { //창 끌때
 				if(client!=null ){
-					
 					if(isNetwork){
 						client.closeNetwork(isServer);
 					}
@@ -78,7 +78,6 @@ public class Tetris extends JFrame implements ActionListener{
 		int port=0;
 		String nickName=null;
 		if(e.getSource() == itemServerStart){
-			
 			String sp = JOptionPane.showInputDialog("port번호를 입력해주세요","9500");
 			if(sp!=null && !sp.equals(""))port = Integer.parseInt(sp);
 			nickName = JOptionPane.showInputDialog("닉네임을 입력해주세요","이름없음");
@@ -102,7 +101,7 @@ public class Tetris extends JFrame implements ActionListener{
 				}
 			}
 		}else if(e.getSource() == itemClientStart){
-			try {
+			try { //host의 ip 받아옴 
 				ip = InetAddress.getLocalHost().getHostAddress();
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();
