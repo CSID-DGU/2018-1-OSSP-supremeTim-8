@@ -18,6 +18,8 @@ public class DataShip implements Serializable { // 소켓에서 사용할 통신
 	public static final int PRINT_SYSTEM_MESSAGE = 10;
 	public static final int GAME_WIN = 11;
 
+	public static final int USE_ITEM = 12; // 아이템 사용을 위한 메세지 신호 추가
+
 	private int cmd = -1;
 	private String name;
 	private String ip;
@@ -28,6 +30,8 @@ public class DataShip implements Serializable { // 소켓에서 사용할 통신
 	private boolean isPlay;
 	private int totalAdd;
 	private int speed;
+
+	private int itemNum; // 아이템 번호 변수
 
 	public DataShip() {
 	}
@@ -114,5 +118,13 @@ public class DataShip implements Serializable { // 소켓에서 사용할 통신
 
 	public void setSpeed(int speed) {
 		this.speed = speed;
+	}
+
+	public void setItemNum(int itemNum) { // 아이템 번호 설정
+		this.itemNum = itemNum;
+	}
+
+	public int getItemNum() { // 아이템 번호 반환
+		return itemNum;
 	}
 }

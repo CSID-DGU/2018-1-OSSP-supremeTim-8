@@ -11,6 +11,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Random; // 아이템을 랜덤으로 정하기 위해 import
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -47,10 +48,13 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	private final int PANEL_WIDTH = maxX * BLOCK_SIZE + MESSAGE_WIDTH + BOARD_X;
 	private final int PANEL_HEIGHT = maxY * BLOCK_SIZE + MESSAGE_HEIGHT + BOARD_Y;
 
+	private final int MAX_ITEM_NUM = 4;
+	private final int MIN_ITEM_NUM = 1;
+
 	private SystemMessageArea systemMsg = new SystemMessageArea(BLOCK_SIZE * 1, BOARD_Y + BLOCK_SIZE + BLOCK_SIZE * 7,
-			BLOCK_SIZE * 5, BLOCK_SIZE * 12);
+			BLOCK_SIZE * 5, BLOCK_SIZE * 12); // 왼쪽 메세지 박스
 	private MessageArea messageArea = new MessageArea(this, 2, PANEL_HEIGHT - (MESSAGE_HEIGHT - MESSAGE_X),
-			PANEL_WIDTH - BLOCK_SIZE * 7 - 2, MESSAGE_HEIGHT - 2);
+			PANEL_WIDTH - BLOCK_SIZE * 7 - 2, MESSAGE_HEIGHT - 2); // 아래쪽 메세지 박스
 	private JButton btnStart = new JButton("시작하기");
 	private JButton btnExit = new JButton("나가기");
 	private JCheckBox checkGhost = new JCheckBox("고스트모드", true);
@@ -91,18 +95,18 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 				messageArea.getHeight() / 2);
 		btnStart.setFocusable(false);
 		btnStart.setEnabled(false);
-		btnStart.addActionListener(this);
+		btnStart.addActionListener(this); // 시작 버튼 만들고 입력 기다림
 		btnExit.setBounds(PANEL_WIDTH - BLOCK_SIZE * 7, PANEL_HEIGHT - messageArea.getHeight() / 2, BLOCK_SIZE * 7,
 				messageArea.getHeight() / 2);
 		btnExit.setFocusable(false);
-		btnExit.addActionListener(this);
+		btnExit.addActionListener(this); // 끝내기 버튼 만들고 입력 기다림
 		checkGhost.setBounds(PANEL_WIDTH - BLOCK_SIZE * 7 + 35, 5, 95, 20);
 		checkGhost.setBackground(new Color(0, 87, 102));
 		checkGhost.setForeground(Color.WHITE);
 		checkGhost.setFont(new Font("굴림", Font.BOLD, 13));
-		checkGhost.addChangeListener(new ChangeListener() {
+		checkGhost.addChangeListener(new ChangeListener() { // 고스트 체크 박스 만들고
 			@Override
-			public void stateChanged(ChangeEvent arg0) {
+			public void stateChanged(ChangeEvent arg0) { // 사용할 건지 state 변경 확인
 				usingGhost = checkGhost.isSelected();
 				TetrisBoard.this.setRequestFocusEnabled(true);
 				TetrisBoard.this.repaint();
@@ -112,9 +116,9 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		checkGrid.setBackground(new Color(0, 87, 102));
 		checkGrid.setForeground(Color.WHITE);
 		checkGrid.setFont(new Font("굴림", Font.BOLD, 13));
-		checkGrid.addChangeListener(new ChangeListener() {
+		checkGrid.addChangeListener(new ChangeListener() { // 그리드 체크 박스 만들고
 			@Override
-			public void stateChanged(ChangeEvent arg0) {
+			public void stateChanged(ChangeEvent arg0) { // 사용할 건지 state 변경 확인
 				usingGrid = checkGrid.isSelected();
 				TetrisBoard.this.setRequestFocusEnabled(true);
 				TetrisBoard.this.repaint();
@@ -128,7 +132,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		this.add(btnStart);
 		this.add(btnExit);
 		this.add(checkGhost);
-		this.add(checkGrid);
+		this.add(checkGrid); // 구현한 UI 모두 추가
 	}
 
 	public void startNetworking(String ip, int port, String nickName) {
@@ -556,11 +560,14 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	}
 
 	public void getFixBlockCallBack(ArrayList<Block> blockList, int removeCombo, int removeMaxLine) {
+		// 일정 블럭을 지우면 아이템이 랜덤으로 등장
 		if (removeCombo < 3) {
-			if (removeMaxLine == 3)
+			if (removeMaxLine == 3) {
 				client.addBlock(1);
-			else if (removeMaxLine == 4)
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));// 아이템 랜덤으로 생성, 1~4 랜덤으로 넘겨줌
+			} else if (removeMaxLine == 4)
 				client.addBlock(3);
+
 		} else if (removeCombo < 10) {
 			if (removeMaxLine == 3)
 				client.addBlock(2);
@@ -568,6 +575,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 				client.addBlock(4);
 			else
 				client.addBlock(1);
+
 		} else {
 			if (removeMaxLine == 3)
 				client.addBlock(3);
@@ -683,7 +691,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	public void mouseReleased(MouseEvent e) {
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) { // 게임시작 메소드
 		if (e.getSource() == btnStart) {
 			if (client != null) {
 				client.gameStart((int) comboSpeed.getSelectedItem());

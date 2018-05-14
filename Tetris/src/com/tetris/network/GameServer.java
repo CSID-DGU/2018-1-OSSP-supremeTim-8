@@ -51,7 +51,7 @@ class GameHandler extends Thread {
 
 	}// GameHandler
 
-	public void run() { 
+	public void run() {
 		DataShip data = null;
 		while (true) {
 			try {
@@ -90,6 +90,10 @@ class GameHandler extends Thread {
 				printMessage(data.getMsg());
 			} else if (data.getCommand() == DataShip.PRINT_SYSTEM_MESSAGE) {
 				printSystemMessage(data.getMsg());
+			}
+
+			else if (data.getCommand() == DataShip.USE_ITEM) { // 아이템 사용 시
+				useItem(data.getItemNum());
 			}
 
 		} // while(true)
@@ -182,7 +186,7 @@ class GameHandler extends Thread {
 		DataShip data = new DataShip(DataShip.ADD_BLOCK);
 		data.setNumOfBlock(numOfBlock); // 블럭 수 설정
 		data.setMsg(index + "P -> ADD:" + numOfBlock); // 관련 메세지 설정
-		data.setIndex(index);
+		data.setIndex(index); // 본인을 제외한 플레이어에게 블럭을 추가하기 위해 -> client readdblock 메소드에 있음
 		totalAdd += numOfBlock; // 여태까지 추가한 블럭 수
 		broadcast(data);
 	}
@@ -258,6 +262,23 @@ class GameHandler extends Thread {
 
 	public boolean isPlay() {
 		return isStartGame;
+	}
+
+	public void useItem(int itemNum) { // 클라이언트에게 메세지를 받고 상대 클라이언트나 자신에게 아이템 사용 관련 메세지 보냄
+		DataShip data = new DataShip(DataShip.USE_ITEM);
+		data.setItemNum(itemNum); // 아이템 번호 설정
+
+		if (itemNum == 1) { // 상대의 속도 일정시간 빠르게
+			data.setMsg(index + "P USE SPEED_ATTACK ITEM !!!"); // 관련 메세지 설정
+		} else if (itemNum == 2) { // 자신의 블럭 두 줄 지우기
+
+		} else if (itemNum == 3) { // 일정 시간동안 자신에게 일자 블럭만 내려오게 하기
+
+		} else if (itemNum == 4) { // 일정 시간동안 상대 화면 가리기
+
+		}
+		data.setIndex(index); // 자신에게는 적용하지 않기 위해
+		broadcast(data);
 	}
 }// GameHandler
 
