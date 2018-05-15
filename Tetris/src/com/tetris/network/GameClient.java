@@ -220,6 +220,8 @@ public class GameClient implements Runnable {
 			switch (itemNum) { // 아이템의 종류에 따라 결정
 			case 1: {
 				// 속도 아이템
+				tetris.changeSpeed(20); // 속도 20으로 변경
+				
 			}
 			case 2: {
 				// 블럭 지우는 아이템

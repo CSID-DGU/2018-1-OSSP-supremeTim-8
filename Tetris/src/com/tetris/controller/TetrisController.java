@@ -41,7 +41,7 @@ public class TetrisController {
 	
 	
 	
-	public boolean checkIndex(int maxX, int maxY){
+	public boolean checkIndex(int maxX, int maxY){ // 영역을 벗어나는지 체크해주는 메소드
 		for(Block blocks : block.getBlock()){
 			if(blocks==null || blocks.getY()<0) continue;
 			
@@ -83,13 +83,13 @@ public class TetrisController {
 	
 	
 	public boolean moveDown(){return moveDown(1);}
-	public boolean moveDown(int y){
+	public boolean moveDown(int y){ // 내려갈 수 있는지 판단해주는 메소드
 		
 		boolean moved = true;
 		
 		block.moveDown(y);
 		
-		if (!checkIndex(maxX, maxY)) {
+		if (!checkIndex(maxX, maxY)) { 
 			block.moveDown(-y);
 			moved = false;
 		}

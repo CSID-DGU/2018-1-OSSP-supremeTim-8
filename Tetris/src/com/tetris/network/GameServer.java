@@ -140,12 +140,12 @@ class GameHandler extends Thread {
 	public void gameStart(int speed) { // 게임시작
 		isStartGame = true;
 		totalAdd = 0;
-		maxRank = list.size(); // 핸들러의 개수 반환 -> 의미?
+		maxRank = list.size(); // 핸들러의 개수 반환 -> 총 플레이어 수
 		DataShip data = new DataShip(DataShip.GAME_START);
 		data.setPlay(true); // 시작 설정
 		data.setSpeed(speed); // 속도 설정
 		data.setMsg("<Game Start>"); // 메세지 설정
-		broadcast(data); // 관련정보 모두 전송
+		broadcast(data); // 관련정보 모든 핸들러에게 전송
 		for (int i = 0; i < list.size(); i++) {
 			GameHandler handler = list.get(i);
 			handler.setRank(0); // 핸들러마다 랭크 0으로 설정
