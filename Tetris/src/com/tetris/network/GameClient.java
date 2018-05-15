@@ -215,13 +215,19 @@ public class GameClient implements Runnable {
 	}
 
 	public void reUseItem(String msg, int itemNum, int index) { // 핸들러에게 메세지를 받고 실질적인 액션 취함
-		if (index != this.index) {
+		if (index != this.index) { // 본인에게는 미적용
 
 			switch (itemNum) { // 아이템의 종류에 따라 결정
 			case 1: {
 				// 속도 아이템
 				tetris.changeSpeed(20); // 속도 20으로 변경
-				
+				try {
+					Thread.sleep(5000); // 5초동안
+				} catch (InterruptedException e) {
+					// TODO 자동 생성된 catch 블록
+					e.printStackTrace();
+				}
+				tetris.changeSpeed(1); // 다시 1로 조정
 			}
 			case 2: {
 				// 블럭 지우는 아이템

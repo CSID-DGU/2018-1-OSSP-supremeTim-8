@@ -162,8 +162,8 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		ghost = getBlockClone(shap, true); // 고스트 블럭 생성
 		hold = null;
 		isHold = false;
-		controller = new TetrisController(shap, maxX - 1, maxY - 1, map); 
-		controllerGhost = new TetrisController(ghost, maxX - 1, maxY - 1, map); // 이동 관련 정의 
+		controller = new TetrisController(shap, maxX - 1, maxY - 1, map);
+		controllerGhost = new TetrisController(ghost, maxX - 1, maxY - 1, map); // 이동 관련 정의
 		this.showGhost(); // 고스트 보여주기
 		for (int i = 0; i < 5; i++) {
 			nextBlocks.add(getRandomTetrisBlock()); // 블럭 5개 추가
@@ -310,9 +310,10 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 
 	@Override
 	public void run() {
-		int countMove = (21 - (int) comboSpeed.getSelectedItem()) * 5; 
-		/* 스피드가 1이면 100 -> 
-		값이 커질수록 moveDown() 호출 적어짐 -> 블럭 내려오는 속도 느림 */
+		int countMove = (21 - (int) comboSpeed.getSelectedItem()) * 5;
+		/*
+		 * 스피드가 1이면 100 -> 값이 커질수록 moveDown() 호출 적어짐 -> 블럭 내려오는 속도 느림
+		 */
 		int countDown = 0; // 값이 클수록 블록이 놓이는 시간이 오래 걸림
 		int countUp = up; // 처음에는 0
 
@@ -324,8 +325,8 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 			}
 
 			if (countDown != 0) { // 처음에는 넘어감 -> 50이 할당되고 처음으로 진입
-				countDown--; 
-				if (countDown == 0) { // 0으로 되면 
+				countDown--;
+				if (countDown == 0) { // 0으로 되면
 
 					if (controller != null && !controller.moveDown()) // 아래로 내려갈 수 없고 컨트롤러가 할당이 안되어있으면
 						this.fixingTetrisBlock();
@@ -343,7 +344,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 					this.showGhost(); // 내려갈 수 있으면 고스트 출력
 			}
 
-			if (countUp != 0) { // 처음에는 넘어감 
+			if (countUp != 0) { // 처음에는 넘어감
 				countUp--;
 				if (countUp == 0) {
 					countUp = up;
@@ -566,10 +567,10 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		if (removeCombo < 3) {
 			if (removeMaxLine == 3) {
 				client.addBlock(1);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));// 아이템 랜덤으로 생성, 1~4 랜덤으로 넘겨줌
+				client.useItem(1/* (int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM) */);// 아이템 랜덤으로 생성, 1~4 랜덤으로 넘겨줌
 			} else if (removeMaxLine == 4) {
 				client.addBlock(3);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+				client.useItem(1/* (int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM) */);
 			}
 
 		} else if (removeCombo < 10) {

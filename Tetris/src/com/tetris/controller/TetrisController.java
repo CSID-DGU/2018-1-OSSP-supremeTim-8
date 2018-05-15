@@ -83,6 +83,7 @@ public class TetrisController {
 	
 	
 	public boolean moveDown(){return moveDown(1);}
+
 	public boolean moveDown(int y){ // 내려갈 수 있는지 판단해주는 메소드
 		
 		boolean moved = true;
