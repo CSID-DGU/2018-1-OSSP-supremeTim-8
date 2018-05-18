@@ -215,10 +215,10 @@ public class GameClient implements Runnable {
 	}
 
 	public void reUseItem(String msg, int itemNum, int index) { // 핸들러에게 메세지를 받고 실질적인 액션 취함
-		if (index != this.index) { // 본인에게는 미적용
 
-			switch (itemNum) { // 아이템의 종류에 따라 결정
-			case 1: {
+		switch (itemNum) { // 아이템의 종류에 따라 결정
+		case 1: {
+			if (index != this.index) { // 본인에게는 미적용
 				// 속도 아이템
 				tetris.changeSpeed(20); // 속도 20으로 변경
 				try {
@@ -229,18 +229,22 @@ public class GameClient implements Runnable {
 				}
 				tetris.changeSpeed(1); // 다시 1로 조정
 			}
-			case 2: {
-				// 블럭 지우는 아이템
-			}
-			case 3: {
-				// 일자블럭 아이템
-			}
-			case 4: {
-				// 구름 아이템
-			}
+
+		}
+		case 2: {
+			// 블럭 지우는 아이템
+			if (index == this.index) {
+				tetris.getBoard().removeBlockLine(19);
+				tetris.getBoard().removeBlockLine(20); // 맨아래 두 줄 삭제
 			}
 		}
-		// tetris.getBoard().addBlockLine(numOfBlock); // 본인을 제외하고 나머지 블럭 추가
+		case 3: {
+			// 일자블럭 아이템
+		}
+		case 4: {
+			// 구름 아이템
+		}
+		}
 		rePrintSystemMessage(msg); // 아이템사용 관련 메세지는 모든 클라이언트에게 출력
 	}
 }

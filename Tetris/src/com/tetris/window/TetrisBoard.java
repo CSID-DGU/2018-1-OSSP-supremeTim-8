@@ -125,7 +125,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 			}
 		});
 		comboSpeed.setBounds(PANEL_WIDTH - BLOCK_SIZE * 8, 5, 45, 20);
-		this.add(comboSpeed);
+		// this.add(comboSpeed); // 버튼 비활성화
 
 		this.add(systemMsg);
 		this.add(messageArea);
@@ -191,7 +191,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 
 		Font font = g.getFont();
 		g.setFont(new Font("굴림", Font.BOLD, 13));
-		g.drawString("속도", PANEL_WIDTH - BLOCK_SIZE * 10, 20);
+		// g.drawString("속도", PANEL_WIDTH - BLOCK_SIZE * 10, 20); // 속도이름 지움
 		g.setFont(font);
 
 		g.setColor(Color.BLACK);
@@ -483,7 +483,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		controllerGhost.setBlock(ghost);
 	}
 
-	private void removeBlockLine(int lineNumber) {
+	public void removeBlockLine(int lineNumber) { // private에서 public으로 변경
 
 		for (int j = 0; j < maxX; j++) {
 			for (int s = 0; s < blockList.size(); s++) {
@@ -567,10 +567,10 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		if (removeCombo < 3) {
 			if (removeMaxLine == 3) {
 				client.addBlock(1);
-				client.useItem(1/* (int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM) */);// 아이템 랜덤으로 생성, 1~4 랜덤으로 넘겨줌
+				client.useItem(2/* (int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM) */);// 아이템 랜덤으로 생성, 1~4 랜덤으로 넘겨줌
 			} else if (removeMaxLine == 4) {
 				client.addBlock(3);
-				client.useItem(1/* (int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM) */);
+				client.useItem(2/* (int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM) */);
 			}
 
 		} else if (removeCombo < 10) {
