@@ -107,7 +107,7 @@ public class GameClient implements Runnable {
 
 			else if (data.getCommand() == DataShip.USE_ITEM) { // 아이템 사용 시
 				if (isPlay) // 클라이언트가 플레이 중이라면
-					reUseItem(data.getMsg(), data.getItemNum(), data.getIndex());
+					reUseItem(data.getMsg(), data.getItemNum(), data.getIndex(), data.getOtherIndex());
 			}
 
 		}
@@ -214,11 +214,12 @@ public class GameClient implements Runnable {
 		send(data);
 	}
 
-	public void reUseItem(String msg, int itemNum, int index) { // 핸들러에게 메세지를 받고 실질적인 액션 취함
+	public void reUseItem(String msg, int itemNum, int index, int otherIndex) { // 핸들러에게 메세지를 받고 실질적인 액션 취함
 
+		rePrintSystemMessage(msg); // 아이템사용 관련 메세지는 모든 클라이언트에게 출력
 		switch (itemNum) { // 아이템의 종류에 따라 결정
 		case 1: {
-			if (index != this.index) { // 본인에게는 미적용
+			if (index != this.index && otherIndex == this.index) { // 본인에게는 미적용하고 상대 한명에게만 적용
 				// 속도 아이템
 				tetris.changeSpeed(20); // 속도 20으로 변경
 				try {
@@ -245,6 +246,5 @@ public class GameClient implements Runnable {
 			// 구름 아이템
 		}
 		}
-		rePrintSystemMessage(msg); // 아이템사용 관련 메세지는 모든 클라이언트에게 출력
 	}
 }

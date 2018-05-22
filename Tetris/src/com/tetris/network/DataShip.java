@@ -32,6 +32,7 @@ public class DataShip implements Serializable { // 소켓에서 사용할 통신
 	private int speed;
 
 	private int itemNum; // 아이템 번호 변수
+	private int otherIndex = 1; // 아이템을 적용시킬 상대의 인덱스
 
 	public DataShip() {
 	}
@@ -86,6 +87,14 @@ public class DataShip implements Serializable { // 소켓에서 사용할 통신
 
 	public void setIndex(int index) {
 		this.index = index;
+	}
+
+	public int getOtherIndex() { // 아이템을 적용시킬 상대의 인덱스 반환
+		return otherIndex;
+	}
+
+	public void setOtherIndex(int otherIndex) { // 아이템을 적용시킬 상대의 인덱스 설정
+		this.otherIndex = otherIndex;
 	}
 
 	public int getRank() {
