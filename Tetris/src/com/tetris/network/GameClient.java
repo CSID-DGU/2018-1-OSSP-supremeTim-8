@@ -227,7 +227,7 @@ public class GameClient implements Runnable {
 					// TODO 자동 생성된 catch 블록
 					e.printStackTrace();
 				}
-				tetris.changeSpeed(1); // 다시 1로 조정
+				tetris.changeSpeed(2 * tetris.getLevel()); // 다시 원래 상태로 조정
 			}
 
 		}
