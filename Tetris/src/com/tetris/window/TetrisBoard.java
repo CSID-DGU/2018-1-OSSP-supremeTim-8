@@ -198,7 +198,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		g.drawString("점수", PANEL_WIDTH - BLOCK_SIZE * 12, 20); // 점수
 		g.drawString(String.valueOf(removeLineSum), PANEL_WIDTH - BLOCK_SIZE * 12, 40);
 		g.drawString("LEVEL", PANEL_WIDTH - BLOCK_SIZE * 9, 20); // 레벨 (1~10)
-		g.drawString(String.valueOf(level), PANEL_WIDTH - BLOCK_SIZE * 8-5, 40); 
+		g.drawString(String.valueOf(level), PANEL_WIDTH - BLOCK_SIZE * 8 - 5, 40);
 		g.setFont(font);
 
 		g.setColor(Color.BLACK);
@@ -472,8 +472,8 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 				removeLineCount++; // 지운 줄 추가
 				removeLineTemp += removeLineCount * 10; // 속도 점수 계산
 				removeLineSum += removeLineCount * 10; // 점수 계산
-				if(removeLineTemp >= 100) { // 속도 점수가 100이 넘으면 레벨 업
-					tetris.changeSpeed(2*level++); // 속도는 2, 4, 6, 8 .. 로 올라감
+				if (removeLineTemp >= 100) { // 속도 점수가 100이 넘으면 레벨 업
+					tetris.changeSpeed(2 * level++); // 속도는 2, 4, 6, 8 .. 로 올라감
 					removeLineTemp = 0; // 속도 점수 초기화
 				}
 				this.removeBlockLine(mainBlock.getY()); // 줄 지움
@@ -580,27 +580,35 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		if (removeCombo < 3) {
 			if (removeMaxLine == 3) {
 				client.addBlock(1);
-				client.useItem( (int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM) );// 아이템 랜덤으로 생성, 1~4 랜덤으로 넘겨줌
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));// 아이템 랜덤으로 생성, 1~4 랜덤으로 넘겨줌
 			} else if (removeMaxLine == 4) {
 				client.addBlock(3);
-				client.useItem( (int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM) );
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
 			}
 
 		} else if (removeCombo < 10) {
-			if (removeMaxLine == 3)
+			if (removeMaxLine == 3) {
 				client.addBlock(2);
-			else if (removeMaxLine == 4)
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+			} else if (removeMaxLine == 4) {
 				client.addBlock(4);
-			else
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+			} else {
 				client.addBlock(1);
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+			}
 
 		} else {
-			if (removeMaxLine == 3)
+			if (removeMaxLine == 3) {
 				client.addBlock(3);
-			else if (removeMaxLine == 4)
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+			} else if (removeMaxLine == 4) {
 				client.addBlock(5);
-			else
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+			} else {
 				client.addBlock(2);
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+			}
 		}
 	}
 
@@ -768,7 +776,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		messageArea.clearMessage();
 		systemMsg.clearMessage();
 	}
-	
+
 	public int getLevel() {
 		return level;
 	}

@@ -278,6 +278,15 @@ class GameHandler extends Thread {
 
 		}
 		data.setIndex(index); // 자신에게는 적용하지 않기 위해
+		if (list.size() >= 2) {
+			while (true) { // 적용시킬 대상이 자신이 나오면 다시 찾음
+				int num = (int) (Math.random() * (list.size()) + 1);
+				if (num != index) {
+					data.setOtherIndex(num); // 적용시킬 대상 찾기 완료
+					break;
+				}
+			}
+		}
 		broadcast(data);
 	}
 }// GameHandler
