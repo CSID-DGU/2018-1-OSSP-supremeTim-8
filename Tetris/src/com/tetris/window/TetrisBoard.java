@@ -79,8 +79,11 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	private boolean isHold = false;
 	private boolean usingGhost = true;
 	private boolean usingGrid = true;
-	private int removeLineCount = 0;
+	private int removeLineCount = 0; // 지운 줄의 개수
+	private int removeLineSum = 0; // 총 점수
+	private int removeLineTemp = 0; // 레벨을 올려주기 위한 점수의 합 (레벨이 올라가면 초기화)
 	private int removeLineCombo = 0;
+	private int level = 1;
 
 	public TetrisBoard(Tetris tetris, GameClient client) {
 		this.tetris = tetris;
@@ -192,6 +195,10 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		Font font = g.getFont();
 		g.setFont(new Font("굴림", Font.BOLD, 13));
 		// g.drawString("속도", PANEL_WIDTH - BLOCK_SIZE * 10, 20); // 속도이름 지움
+		g.drawString("점수", PANEL_WIDTH - BLOCK_SIZE * 12, 20); // 점수
+		g.drawString(String.valueOf(removeLineSum), PANEL_WIDTH - BLOCK_SIZE * 12, 40);
+		g.drawString("LEVEL", PANEL_WIDTH - BLOCK_SIZE * 9, 20); // 레벨 (1~10)
+		g.drawString(String.valueOf(level), PANEL_WIDTH - BLOCK_SIZE * 8 - 5, 40);
 		g.setFont(font);
 
 		g.setColor(Color.BLACK);
@@ -463,6 +470,12 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 
 			if (count == maxX) { // 가로줄이 모두 채워지면
 				removeLineCount++; // 지운 줄 추가
+				removeLineTemp += removeLineCount * 10; // 속도 점수 계산
+				removeLineSum += removeLineCount * 10; // 점수 계산
+				if (removeLineTemp >= 100) { // 속도 점수가 100이 넘으면 레벨 업
+					tetris.changeSpeed(2 * level++); // 속도는 2, 4, 6, 8 .. 로 올라감
+					removeLineTemp = 0; // 속도 점수 초기화
+				}
 				this.removeBlockLine(mainBlock.getY()); // 줄 지움
 				isCombo = true; // 콤보 true
 			}
@@ -762,6 +775,10 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	public void clearMessage() {
 		messageArea.clearMessage();
 		systemMsg.clearMessage();
+	}
+
+	public int getLevel() {
+		return level;
 	}
 
 }

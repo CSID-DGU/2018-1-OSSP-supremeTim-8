@@ -182,4 +182,8 @@ public class Tetris extends JFrame implements ActionListener {
 	public void changeSpeed(Integer speed) {
 		board.changeSpeed(speed);
 	}
+	
+	public int getLevel() {
+		return board.getLevel();
+	}
 }
