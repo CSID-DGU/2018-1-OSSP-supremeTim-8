@@ -57,7 +57,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	private JCheckBox checkGrid = new JCheckBox("격자 표시", true);
 	private Integer[] lv = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
 	private JComboBox<Integer> comboSpeed = new JComboBox<Integer>(lv);
-
+	
 	private String ip;
 	private int port;
 	private String nickName;
