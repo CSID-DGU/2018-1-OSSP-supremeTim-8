@@ -580,22 +580,22 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		if (removeCombo < 3) {
 			if (removeMaxLine == 3) {
 				client.addBlock(1);
-				client.useItem(3);// 아이템 랜덤으로 생성, 1~4 랜덤으로 넘겨줌
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));// 아이템 랜덤으로 생성, 1~4 랜덤으로 넘겨줌
 			} else if (removeMaxLine == 4) {
 				client.addBlock(3);
-				client.useItem(3);
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
 			}
 
 		} else if (removeCombo < 10) {
 			if (removeMaxLine == 3) {
 				client.addBlock(2);
-				client.useItem(3);
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
 			} else if (removeMaxLine == 4) {
 				client.addBlock(4);
-				client.useItem(3);
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
 			} else {
 				client.addBlock(1);
-				client.useItem(3);
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
 			}
 
 		} else {
