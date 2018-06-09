@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import com.tetris.window.Tetris;
+import com.tetris.shape.Line; // 아이템 사용을 위해 import
 
 public class GameClient implements Runnable {
 	private Tetris tetris;
@@ -228,7 +229,7 @@ public class GameClient implements Runnable {
 					// TODO 자동 생성된 catch 블록
 					e.printStackTrace();
 				}
-				tetris.changeSpeed(2 * tetris.getLevel());
+				tetris.changeSpeed(2 * tetris.getLevel()); // 그 전 스피드로 조정
 				//tetris.changeSpeed(1); // 다시 1로 조정
 			}
 			break;
@@ -243,6 +244,12 @@ public class GameClient implements Runnable {
 		}
 		case 3: {
 			// 일자블럭 아이템
+			if(index == this.index) {
+				tetris.getBoard().nextBlocks.clear(); // 대기열 초기화
+				for(int i=0;i<5;i++) {
+					tetris.getBoard().nextBlocks.add(new Line(4,1)); // 5개의 line 블럭 추가
+				}
+			}
 			break;
 		}
 		case 4: {

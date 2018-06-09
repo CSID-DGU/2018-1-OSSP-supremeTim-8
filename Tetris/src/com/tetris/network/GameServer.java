@@ -273,7 +273,7 @@ class GameHandler extends Thread {
 		} else if (itemNum == 2) { // 자신의 블럭 두 줄 지우기
 			data.setMsg(index + "P USE REMOVE_LINE ITEM !!!");
 		} else if (itemNum == 3) { // 일정 시간동안 자신에게 일자 블럭만 내려오게 하기
-
+			data.setMsg(index + "P USE LINE_BLOCK ITEM !!!");
 		} else if (itemNum == 4) { // 일정 시간동안 상대 화면 가리기
 
 		}

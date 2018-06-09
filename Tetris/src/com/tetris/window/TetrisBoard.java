@@ -48,7 +48,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	private final int PANEL_WIDTH = maxX * BLOCK_SIZE + MESSAGE_WIDTH + BOARD_X;
 	private final int PANEL_HEIGHT = maxY * BLOCK_SIZE + MESSAGE_HEIGHT + BOARD_Y;
 
-	private final int MAX_ITEM_NUM = 2; // 아직 구현한 아이템 총 2개
+	private final int MAX_ITEM_NUM = 3; // 아직 구현한 아이템 총 2개
 	private final int MIN_ITEM_NUM = 1;
 
 	private SystemMessageArea systemMsg = new SystemMessageArea(BLOCK_SIZE * 1, BOARD_Y + BLOCK_SIZE + BLOCK_SIZE * 7,
@@ -67,7 +67,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	private String nickName;
 	private Thread th;
 	private ArrayList<Block> blockList;
-	private ArrayList<TetrisBlock> nextBlocks;
+	public ArrayList<TetrisBlock> nextBlocks; // 아이템 사용을 위해 접근 지시자 수정
 	private TetrisBlock shap;
 	private TetrisBlock ghost;
 	private TetrisBlock hold;
@@ -410,7 +410,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		}
 	}
 
-	private void fixingTetrisBlock() { // 콤보 연산 -> 상대에게 블럭 추가 및 아이템 랜덤 획득
+	private void fixingTetrisBlock() { // 블럭 고정
 		synchronized (this) {
 			if (stop) {
 				try {
@@ -580,22 +580,22 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		if (removeCombo < 3) {
 			if (removeMaxLine == 3) {
 				client.addBlock(1);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));// 아이템 랜덤으로 생성, 1~4 랜덤으로 넘겨줌
+				client.useItem(3);// 아이템 랜덤으로 생성, 1~4 랜덤으로 넘겨줌
 			} else if (removeMaxLine == 4) {
 				client.addBlock(3);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+				client.useItem(3);
 			}
 
 		} else if (removeCombo < 10) {
 			if (removeMaxLine == 3) {
 				client.addBlock(2);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+				client.useItem(3);
 			} else if (removeMaxLine == 4) {
 				client.addBlock(4);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+				client.useItem(3);
 			} else {
 				client.addBlock(1);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+				client.useItem(3);
 			}
 
 		} else {
@@ -612,7 +612,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		}
 	}
 
-	public void playBlockHold() {
+	public void playBlockHold() { // 블럭 Hold 메소드
 		if (isHold)
 			return;
 
