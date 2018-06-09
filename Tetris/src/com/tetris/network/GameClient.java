@@ -229,9 +229,9 @@ public class GameClient implements Runnable {
 					e.printStackTrace();
 				}
 				tetris.changeSpeed(2 * tetris.getLevel());
-				// tetris.changeSpeed(1); // 다시 1로 조정
+				//tetris.changeSpeed(1); // 다시 1로 조정
 			}
-
+			break;
 		}
 		case 2: {
 			// 블럭 지우는 아이템
@@ -239,13 +239,18 @@ public class GameClient implements Runnable {
 				tetris.getBoard().removeBlockLine(19);
 				tetris.getBoard().removeBlockLine(20); // 맨아래 두 줄 삭제
 			}
+			break;
 		}
 		case 3: {
 			// 일자블럭 아이템
+			break;
 		}
 		case 4: {
 			// 구름 아이템
+			break;
 		}
+		default:
+			break;
 		}
 	}
 }
