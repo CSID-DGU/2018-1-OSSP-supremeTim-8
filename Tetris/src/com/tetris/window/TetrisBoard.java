@@ -148,7 +148,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 
 	public void gameStart(int speed) { // 게임시작 메소드
 		comboSpeed.setSelectedItem(new Integer(speed));
-
+		
 		if (th != null) { // 처음 이 메소드를 실행한 경우 th=null
 			try {
 				isPlay = false;
@@ -174,6 +174,12 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		}
 
 		isPlay = true;
+		removeLineCount = 0; // 지운 줄의 개수
+		removeLineSum = 0; // 총 점수
+		removeLineTemp = 0; // 레벨을 올려주기 위한 점수의 합 (레벨이 올라가면 초기화)
+		removeLineCombo = 0;
+		level = 1;
+		client.reChangSpeed(1);
 		th = new Thread(this);
 		th.start(); // run 메소드 시작
 	}
@@ -474,7 +480,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 				removeLineTemp += removeLineCount * 10; // 속도 점수 계산
 				removeLineSum += removeLineCount * 10; // 점수 계산
 				if (removeLineTemp >= 100) { // 속도 점수가 100이 넘으면 레벨 업
-					tetris.clientChangeSpeed(2 * level++); // 속도는 2, 4, 6, 8 .. 로 올라감
+					client.reChangSpeed(10*level++); // 속도는 2, 4, 6, 8 .. 로 올라감
 					removeLineTemp = 0; // 속도 점수 초기화
 				}
 				this.removeBlockLine(mainBlock.getY()); // 줄 지움
@@ -770,13 +776,8 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	public GameClient getClient() {
 		return client;
 	}
-	public void clientChangeSpeed(Integer speed) {
-		client.reChangSpeed(speed);
-	}
-
 	public void changeSpeed(Integer speed) {
 		comboSpeed.setSelectedItem(speed);
-		//System.out.println(speed);
 	}
 
 	public void clearMessage() {

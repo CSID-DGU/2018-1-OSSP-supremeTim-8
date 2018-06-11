@@ -207,6 +207,7 @@ public class GameClient implements Runnable {
 
 	public void reChangSpeed(Integer speed) { // 속도변화 메소드
 		tetris.changeSpeed(speed);
+		System.out.println(speed);
 	}
 
 	public void useItem(int itemNum) { // 아이템을 사용하겠다는 메세지를 핸들러에게 보냄
