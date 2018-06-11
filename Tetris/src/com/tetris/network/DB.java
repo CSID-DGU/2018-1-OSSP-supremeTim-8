@@ -1,11 +1,14 @@
 package com.tetris.network;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Label;
 import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 public class DB {
 	public DB() { //창만보여주기 
-		String [][] sbr= new String[100][2];
+		String [][] sbr= new String[10][2];
 		try {
 			int i=0;
 			//1.get a connection to database
@@ -28,6 +31,8 @@ public class DB {
 			ResultSet myRe=myStmt.executeQuery("select * from tetris_db order by score desc");
 			//4.순위에 맞게 name 과 score 저장
 			while(myRe.next()) {
+				if(i==10)
+					break;
 				sbr[i][0]=myRe.getString("name");
 				sbr[i][1]=myRe.getString("score");
 				i++;
@@ -68,16 +73,61 @@ class rank_frame extends JDialog{
 		this.setLayout(b);
 		add(jlb1,BorderLayout.NORTH);
 		
-		jp.setLayout(new GridLayout(0,3,3,3));
+		jp.setLayout(new GridLayout(0,3,20,20));
+		int i=0;
 		jp.add(new JLabel("RANK"));
 		jp.add(new JLabel("NAME"));
 		jp.add(new JLabel("SCORE"));
-		for(int i=0;i<j;i++) {
-			jp.add(new JLabel(String.valueOf(i+1)));
-			jp.add(new JLabel(str[i][0]));
-			jp.add(new JLabel(str[i][1]));
+		JLabel j1=new JLabel(String.valueOf(i+1));
+		j1.setForeground(Color.RED);
+		JLabel j2=new JLabel(str[i][0]);
+		j2.setForeground(Color.RED);
+		JLabel j3=new JLabel(str[i][1]);
+		j3.setForeground(Color.RED);
+		j1.setHorizontalAlignment(SwingConstants.CENTER);
+		j2.setHorizontalAlignment(SwingConstants.CENTER);
+		j3.setHorizontalAlignment(SwingConstants.CENTER);
+		jp.add(j1);
+		jp.add(j2);
+		jp.add(j3);
+		i++;
+		j1 = new JLabel(String.valueOf(i+1));
+		j2=new JLabel(str[i][0]);
+		j3=new JLabel(str[i][1]);
+		j1.setForeground(Color.GREEN);
+		j2.setForeground(Color.GREEN);
+		j3.setForeground(Color.GREEN);
+		j1.setHorizontalAlignment(SwingConstants.CENTER);
+		j2.setHorizontalAlignment(SwingConstants.CENTER);
+		j3.setHorizontalAlignment(SwingConstants.CENTER);
+		jp.add(j1);
+		jp.add(j2);
+		jp.add(j3);
+		i++;
+		j1 = new JLabel(String.valueOf(i+1));
+		j2=new JLabel(str[i][0]);
+		j3=new JLabel(str[i][1]);
+		j1.setForeground(Color.BLUE);
+		j2.setForeground(Color.BLUE);
+		j3.setForeground(Color.BLUE);
+		j1.setHorizontalAlignment(SwingConstants.CENTER);
+		j2.setHorizontalAlignment(SwingConstants.CENTER);
+		j3.setHorizontalAlignment(SwingConstants.CENTER);
+		jp.add(j1);
+		jp.add(j2);
+		jp.add(j3);
+		i++;
+		for(;i<j;i++) {
+			j1 = new JLabel(String.valueOf(i+1));
+			j2=new JLabel(str[i][0]);
+			j3=new JLabel(str[i][1]);
+			j1.setHorizontalAlignment(SwingConstants.CENTER);
+			j2.setHorizontalAlignment(SwingConstants.CENTER);
+			j3.setHorizontalAlignment(SwingConstants.CENTER);
+			jp.add(j1);
+			jp.add(j2);
+			jp.add(j3);
 		}
-		
 		add(jp,BorderLayout.CENTER);
 		add(jlb2,BorderLayout.WEST);
 		add(jlb3,BorderLayout.EAST);
