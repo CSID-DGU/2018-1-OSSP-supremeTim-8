@@ -174,9 +174,10 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		}
 
 		isPlay = true;
-		removeLineCount = 0; // 지운 줄의 개수
-		removeLineSum = 0; // 총 점수
-		removeLineTemp = 0; // 레벨을 올려주기 위한 점수의 합 (레벨이 올라가면 초기화)
+		//시작했을 때 다시 초기화
+		removeLineCount = 0; 
+		removeLineSum = 0; 
+		removeLineTemp = 0; 
 		removeLineCombo = 0;
 		level = 1;
 		client.reChangSpeed(1);
@@ -453,20 +454,23 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		boolean isCombo = false;
 		int count = 0;
 		Block mainBlock;
-
+		for(int i=0;i<blockList.size();i++) { //모든 블럭 전부 확
+			mainBlock = blockList.get(i);
+			if (mainBlock.getY() == 0 )//&& mainBlock.getX() > 2 && mainBlock.getX() < 7) { // 게임오버(좌상단이 0,0)
+			{	this.gameEndCallBack();
+				break;
+			}
+		}
 		for (int i = 0; i < blockList.size(); i++) {
 			mainBlock = blockList.get(i);
 
 			if (mainBlock.getY() < 0 || mainBlock.getY() >= maxY) // 벗어나는 경우 for문으로 다시 돌아감
 				continue;
-
-			if (mainBlock.getY() < maxY && mainBlock.getX() < maxX) // 아래에 있던 블록위에 올림
+			if (mainBlock.getY() < maxY && mainBlock.getX() < maxX)  // 아래에 있던 블록위에 올림
 				map[mainBlock.getY()][mainBlock.getX()] = mainBlock;
-
-			if (mainBlock.getY() == 1 && mainBlock.getX() > 2 && mainBlock.getX() < 7) { // 게임오버(좌상단이 0,0)
-				this.gameEndCallBack();
-				break;
-			}
+			
+		
+			
 
 			count = 0;
 			for (int j = 0; j < maxX; j++) {
@@ -480,7 +484,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 				removeLineTemp += removeLineCount * 10; // 속도 점수 계산
 				removeLineSum += removeLineCount * 10; // 점수 계산
 				if (removeLineTemp >= 100) { // 속도 점수가 100이 넘으면 레벨 업
-					client.reChangSpeed(10*level++); // 속도는 2, 4, 6, 8 .. 로 올라감
+					client.reChangSpeed(2*level++); // 해당 클라이언트의 속도는 2, 4, 6, 8 .. 로 올라감
 					removeLineTemp = 0; // 속도 점수 초기화
 				}
 				this.removeBlockLine(mainBlock.getY()); // 줄 지움
