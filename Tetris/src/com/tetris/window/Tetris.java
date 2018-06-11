@@ -18,104 +18,108 @@ import javax.swing.JOptionPane;
 import com.tetris.network.GameClient;
 import com.tetris.network.GameServer;
 
-public class Tetris extends JFrame implements ActionListener{
+public class Tetris extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private GameServer server;
 	private GameClient client;
-	/*이부분에서 1p,2p 나누는 창:바꾸는게 안된다면 기능을 키고끄느 방법으로 */
-	private TetrisBoard board = new TetrisBoard(this,client);
+	private TetrisBoard board = new TetrisBoard(this, client);
 	private JMenuItem itemServerStart = new JMenuItem("서버로 접속하기");
 	private JMenuItem itemClientStart = new JMenuItem("클라이언트로 접속하기");
-	
+
 	private boolean isNetwork;
 	private boolean isServer;
-
-	
 
 	public Tetris() {
 		JMenuBar mnBar = new JMenuBar();
 		JMenu mnGame = new JMenu("게임하기");
-		
+
 		mnGame.add(itemServerStart);
 		mnGame.add(itemClientStart);
 		mnBar.add(mnGame);
-		
+
 		this.setJMenuBar(mnBar);
-		
-		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);//closing event로 
+
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.getContentPane().add(board);
-		
+
 		this.setResizable(false);
 		this.pack();
-		Dimension size = Toolkit.getDefaultToolkit().getScreenSize(); //스크린전체사이즈
-		this.setLocation((size.width-this.getWidth())/2,(size.height-this.getHeight())/2); //스크린 중앙에 위치 
+		Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation((size.width - this.getWidth()) / 2, (size.height - this.getHeight()) / 2);
 		this.setVisible(true);
-		
+
 		itemServerStart.addActionListener(this);
 		itemClientStart.addActionListener(this);
 		this.addWindowListener(new WindowAdapter() {
 
 			@Override
-			public void windowClosing(WindowEvent e) { //창 끌때
-				if(client!=null ){
-					if(isNetwork){
+			public void windowClosing(WindowEvent e) {
+				if (client != null) {
+
+					if (isNetwork) {
 						client.closeNetwork(isServer);
 					}
-				}else{
+				} else {
 					System.exit(0);
 				}
-				
+
 			}
-			
+
 		});
-		
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
-		String ip=null;
-		int port=0;
-		String nickName=null;
-		if(e.getSource() == itemServerStart){
-			String sp = JOptionPane.showInputDialog("port번호를 입력해주세요","9500");
-			if(sp!=null && !sp.equals(""))port = Integer.parseInt(sp);
-			nickName = JOptionPane.showInputDialog("닉네임을 입력해주세요","이름없음");
-			
-			if(port!=0){
-				if(server == null) server = new GameServer(port);
+
+		String ip = null;
+		int port = 0;
+		String nickName = null;
+		if (e.getSource() == itemServerStart) { // 서버로 시작하기 눌렀을 때
+
+			String sp = JOptionPane.showInputDialog("port번호를 입력해주세요", "9500");
+			if (sp != null && !sp.equals(""))
+				port = Integer.parseInt(sp);
+			nickName = JOptionPane.showInputDialog("닉네임을 입력해주세요", "이름없음");
+
+			if (port != 0) {
+				if (server == null)
+					server = new GameServer(port); // 서버 클라이언트 소켓 생성
 				server.startServer();
-				try {ip = InetAddress.getLocalHost().getHostAddress();
-				} catch (UnknownHostException e1) {e1.printStackTrace();}
-				if(ip!=null){
-					client = new GameClient(this,ip,port,nickName);
-					if(client.start()){
+				try {
+					ip = InetAddress.getLocalHost().getHostAddress();
+				} catch (UnknownHostException e1) {
+					e1.printStackTrace();
+				}
+				if (ip != null) {
+					client = new GameClient(this, ip, port, nickName);
+					if (client.start()) {
 						itemServerStart.setEnabled(false);
 						itemClientStart.setEnabled(false);
-						board.setClient(client);
+						board.setClient(client); // 클라이언트 설정
 						board.getBtnStart().setEnabled(true);
-						board.startNetworking(ip, port, nickName);
+						board.startNetworking(ip, port, nickName); // 클라이언트의 보드에 각 정보 설정
 						isNetwork = true;
 						isServer = true;
 					}
 				}
 			}
-		}else if(e.getSource() == itemClientStart){
-			try { //host의 ip 받아옴 
+		} else if (e.getSource() == itemClientStart) { // 클라이언트로 시작하기 눌렀을 때
+			try {
 				ip = InetAddress.getLocalHost().getHostAddress();
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();
 			}
-			
-			ip = JOptionPane.showInputDialog("IP를 입력해주세요.",ip);
-			String sp = JOptionPane.showInputDialog("port번호를 입력해주세요","9500");
-			if(sp!=null && !sp.equals(""))port = Integer.parseInt(sp);
-			nickName = JOptionPane.showInputDialog("닉네임을 입력해주세요","이름없음");
 
-		
-			if(ip!=null){
-				client = new GameClient(this,ip,port,nickName);
-				if(client.start()){
+			ip = JOptionPane.showInputDialog("IP를 입력해주세요.", ip);
+			String sp = JOptionPane.showInputDialog("port번호를 입력해주세요", "9500");
+			if (sp != null && !sp.equals(""))
+				port = Integer.parseInt(sp);
+			nickName = JOptionPane.showInputDialog("닉네임을 입력해주세요", "이름없음");
+
+			if (ip != null) {
+				client = new GameClient(this, ip, port, nickName); // 클라이언트 소켓 생성
+				if (client.start()) {
 					itemServerStart.setEnabled(false);
 					itemClientStart.setEnabled(false);
 					board.setClient(client);
@@ -126,7 +130,7 @@ public class Tetris extends JFrame implements ActionListener{
 		}
 	}
 
-	public void closeNetwork(){
+	public void closeNetwork() {
 		isNetwork = false;
 		client = null;
 		itemServerStart.setEnabled(true);
@@ -135,16 +139,51 @@ public class Tetris extends JFrame implements ActionListener{
 		board.setClient(null);
 	}
 
-	public JMenuItem getItemServerStart() {return itemServerStart;}
-	public JMenuItem getItemClientStart() {return itemClientStart;}
-	public TetrisBoard getBoard(){return board;}
-	public void gameStart(int speed){board.gameStart(speed);}
-	public boolean isNetwork() {return isNetwork;}
-	public void setNetwork(boolean isNetwork) {this.isNetwork = isNetwork;}
-	public void printSystemMessage(String msg){board.printSystemMessage(msg);}
-	public void printMessage(String msg){board.printMessage(msg);}
-	public boolean isServer() {return isServer;}
-	public void setServer(boolean isServer) {this.isServer = isServer;}
+	public JMenuItem getItemServerStart() {
+		return itemServerStart;
+	}
 
-	public void changeSpeed(Integer speed) {board.changeSpeed(speed);}
+	public JMenuItem getItemClientStart() {
+		return itemClientStart;
+	}
+
+	public TetrisBoard getBoard() {
+		return board;
+	}
+
+	public void gameStart(int speed) {
+		board.gameStart(speed);
+	}
+
+	public boolean isNetwork() {
+		return isNetwork;
+	}
+
+	public void setNetwork(boolean isNetwork) {
+		this.isNetwork = isNetwork;
+	}
+
+	public void printSystemMessage(String msg) {
+		board.printSystemMessage(msg);
+	}
+
+	public void printMessage(String msg) {
+		board.printMessage(msg);
+	}
+
+	public boolean isServer() {
+		return isServer;
+	}
+
+	public void setServer(boolean isServer) {
+		this.isServer = isServer;
+	}
+
+	public void changeSpeed(Integer speed) {
+		board.changeSpeed(speed);
+	}
+	
+	public int getLevel() {
+		return board.getLevel();
+	}
 }
