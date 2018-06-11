@@ -2,6 +2,7 @@ package com.tetris.window;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -10,33 +11,36 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
+import com.tetris.network.DB;
 import com.tetris.network.GameClient;
 import com.tetris.network.GameServer;
 
-public class Tetris extends JFrame implements ActionListener {
+public class Tetris extends JFrame implements ActionListener, MenuListener{
 	private static final long serialVersionUID = 1L;
 	private GameServer server;
 	private GameClient client;
 	private TetrisBoard board = new TetrisBoard(this, client);
 	private JMenuItem itemServerStart = new JMenuItem("서버로 접속하기");
 	private JMenuItem itemClientStart = new JMenuItem("클라이언트로 접속하기");
-
+	private JMenu mnRank=new JMenu("랭킹보기") ;
 	private boolean isNetwork;
 	private boolean isServer;
-
 	public Tetris() {
 		JMenuBar mnBar = new JMenuBar();
 		JMenu mnGame = new JMenu("게임하기");
-
 		mnGame.add(itemServerStart);
 		mnGame.add(itemClientStart);
 		mnBar.add(mnGame);
-
+		mnBar.add(mnRank);
+		mnBar.setSize(10,100);
 		this.setJMenuBar(mnBar);
 
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -50,6 +54,7 @@ public class Tetris extends JFrame implements ActionListener {
 
 		itemServerStart.addActionListener(this);
 		itemClientStart.addActionListener(this);
+		mnRank.addMenuListener(this);
 		this.addWindowListener(new WindowAdapter() {
 
 			@Override
@@ -70,6 +75,15 @@ public class Tetris extends JFrame implements ActionListener {
 	}
 
 	@Override
+	public void menuSelected(MenuEvent e) {
+		if(e.getSource()==mnRank) {
+			new DB();
+		}
+	}
+	public void menuDeselected(MenuEvent e) {
+	}
+	public void menuCanceled(MenuEvent e) {
+	 }
 	public void actionPerformed(ActionEvent e) {
 
 		String ip = null;
