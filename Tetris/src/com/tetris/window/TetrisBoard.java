@@ -602,39 +602,33 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	}
 
 	public void getFixBlockCallBack(ArrayList<Block> blockList, int removeCombo, int removeMaxLine) {
-		// 일정 블럭을 지우면 아이템이 랜덤으로 등장
-		if (removeCombo < 3) {
+		// 콤보를 기준으로 마지막에 지운 라인 수가 몇이냐에 따라 액션 취함
+		if (removeCombo == 2) {
 			if (removeMaxLine == 3) {
-				client.addBlock(1);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));// 아이템 랜덤으로 생성, 1~4 랜덤으로 넘겨줌
+				client.addBlock(2);
 			} else if (removeMaxLine == 4) {
 				client.addBlock(3);
+			} else {
+				client.addBlock(1);
+			}
+
+		} else if (removeCombo == 3) {
+			if (removeMaxLine == 3) {
+				client.addBlock(1);
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+			} else if (removeMaxLine == 4) {
+				client.addBlock(2);
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+			} else {
 				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
 			}
 
-		} else if (removeCombo < 10) {
-			if (removeMaxLine == 3) {
-				client.addBlock(2);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			} else if (removeMaxLine == 4) {
-				client.addBlock(4);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			} else {
-				client.addBlock(1);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			}
+		} else if (removeCombo == 4) {
+			client.addBlock(3);
+		} else if (removeCombo == 5) {
+			client.addBlock(4);
+			client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
 
-		} else {
-			if (removeMaxLine == 3) {
-				client.addBlock(3);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			} else if (removeMaxLine == 4) {
-				client.addBlock(5);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			} else {
-				client.addBlock(2);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			}
 		}
 	}
 
@@ -740,7 +734,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 			controller.moveQuickDown(shap.getPosY(), true);
 			this.fixingTetrisBlock();
 		} else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
-			// playBlockHold();
+			playBlockHold();
 		}
 		this.showGhost();
 		this.repaint();
