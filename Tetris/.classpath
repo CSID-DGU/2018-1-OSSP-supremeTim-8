@@ -6,6 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/samsung/Downloads/jlayer1.0.1/JLayer1.0.1/jl1.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/dlsxo_000/git/2018-1-OSSP-supremeTim-8/jl1.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
