@@ -314,20 +314,23 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 			for (int i = 0; i < noteList.size(); i++) {
 				Note note = noteList.get(i);
 				if (note.getTime() <= gameMusic.getTime()) {
-					note.count = gameMusic.getTime();
+					//note.count = gameMusic.getTime();
+					if(note.drop_judge==false)
+						note.start_drop();
 					note.screenDraw(g);
-					if (gameMusic.getTime() % 10 == 0) {
-						note.drop();
-						System.out.println("Time is " + gameMusic.getTime());
-						System.out.println("Time is " + gameMusic.getTime());
-					}
-
+					//if (gameMusic.getTime() % 10 == 0)
+					//	note.drop();
+					//
+					//	System.out.println("Time is " + gameMusic.getTime());
+					
 					// note.count++;
-					System.out.println("	" + i + "'s y is " + note.getY());
+					System.out.println("Time is " + gameMusic.getTime());
+					System.out.println("	" + note.getTime() + "'s y is " + note.getY());
 
 				}
 
 				if (note.getY() >= 540) {
+					note.stop_drop();
 					noteList.remove(i);
 					i--;
 
