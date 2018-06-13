@@ -88,6 +88,7 @@ public class RhythmGame extends JDialog {
 		selectButton.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e) {
 				selectMusic.close(); // 음악 종료
+				
 				dispose(); // JDialog 종료
 				
 			}
@@ -144,7 +145,10 @@ public class RhythmGame extends JDialog {
 	}
 	
 	public Music getGameMusic(){
-	
 		return gameMusic;
+	}
+	
+	public String getGameTitle() {
+		return trackList.get(nowSelected).getTitle();
 	}
 }

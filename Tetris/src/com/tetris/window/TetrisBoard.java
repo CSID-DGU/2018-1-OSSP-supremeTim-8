@@ -70,14 +70,18 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	private RhythmGame rtGame;
 	private Music gameMusic;
 	private boolean isRhythm = false;
-	private int totalTime =0;
-	private int index;
-	
+	private int increaseTime = 0;
+
+	private Image perfectImage = new ImageIcon("./src/image/perfect.png").getImage();
+	private Image goodImage = new ImageIcon("./src/image/good.png").getImage();
+	private Image missImage = new ImageIcon("./src/image/miss.png").getImage();
+	private int judge;
+	private boolean isJudge = false;
+
 	ArrayList<Note> noteList = new ArrayList<Note>();
 
 	Music openingMusic = new Music("opening_music.mp3", true);
 
-	
 	public TetrisBoard(Tetris tetris, GameClient client) {
 		this.tetris = tetris;
 		this.client = client;
@@ -123,7 +127,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		this.add(btnRhythm);
 		// this.add(checkGrid); // 구현한 UI 모두 추가
 
-		openingMusic.start();
+		// openingMusic.start();
 
 	}
 
@@ -230,6 +234,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 
 		int x = 0, y = 0, newY = 0;
 		int noteX = 0, noteY = 0;
+
 		if (hold != null) {
 			x = 0;
 			y = 0;
@@ -305,17 +310,31 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		}
 
 		if (isRhythm) {
+
 			for (int i = 0; i < noteList.size(); i++) {
 				Note note = noteList.get(i);
-				if(note.getTime() <= gameMusic.getTime()) {
-					note.srcreenDraw(g);
-					note.drop();
+				if (note.getTime() <= gameMusic.getTime()) {
+					note.count = gameMusic.getTime();
+					note.screenDraw(g);
+					if (gameMusic.getTime() % 10 == 0) {
+						note.drop();
+						System.out.println("Time is " + gameMusic.getTime());
+						System.out.println("Time is " + gameMusic.getTime());
+					}
+
+					// note.count++;
+					System.out.println("	" + i + "'s y is " + note.getY());
+
 				}
-				if(note.getY() >= 500) {
+
+				if (note.getY() >= 540) {
 					noteList.remove(i);
 					i--;
+
 				}
-				
+				// if(isJudge)
+				judgeDraw(g);
+				// isJudge = false;
 			}
 
 		}
@@ -365,8 +384,6 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 					addBlockLine(1);
 				}
 			}
-			
-			
 
 			this.repaint();
 		} // while()
@@ -621,9 +638,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		}
 	}
 
-	public void playBlockHold() { // 블럭 Hold 메소드
-		if (isHold)
-			return;
+	public void playBlockHold() { // 블럭 Hold 메소드 if (isHold) return;
 
 		if (hold == null) {
 			hold = getBlockClone(shap, false);
@@ -684,7 +699,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	}
 
 	public void keyPressed(KeyEvent e) {
-		
+
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			messageArea.requestFocus();
 		}
@@ -702,27 +717,30 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 			controller.nextRotationLeft();
 			controllerGhost.nextRotationLeft();
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			Note note = noteList.get(0);
-			if(note.getY() <= 380 ) {
-				System.out.println("miss!");
+			if (isRhythm) {
+				isJudge = true;
+				Note note = noteList.get(0);
+				if (note.getY() <= 400) {
+					judge = 0;
+					System.out.println("				miss");
+				} else if (note.getY() <= 470) {
+					judge = 1;
+					System.out.println("				good");
+				} else if (note.getY() <= 510) {
+					judge = 2;
+					System.out.println("				perfect");
+				} else if (note.getY() <= 530) {
+					judge = 1;
+					System.out.println("				good");
+				} else {
+					judge = 1;
+					System.out.println("				miss");
+				}
 			}
-			else if(note.getY() <= 400 ) {
-				System.out.println("good!");
-			}
-			else if(note.getY() <= 420 ) {
-				System.out.println("perfect!");
-			}
-			else if(note.getY() <= 440 ) {
-				System.out.println("good!");
-			}
-			else if(note.getY() <= 480 ) {
-				System.out.println("miss!");
-			}
-
 			controller.moveQuickDown(shap.getPosY(), true);
 			this.fixingTetrisBlock();
 		} else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
-			playBlockHold();
+			// playBlockHold();
 		}
 		this.showGhost();
 		this.repaint();
@@ -751,11 +769,11 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 			} else { // 클라이언트가 존재하지 않으면
 				this.gameStart((int) comboSpeed.getSelectedItem());
 			}
-			if(isRhythm) {
+			if (isRhythm) {
 				gameMusic = rtGame.getGameMusic();
+				new AddNotes(rtGame.getGameTitle(), noteList);
 				gameMusic.start();
-				this.dropNotes(" ");
-				
+
 			}
 		} else if (e.getSource() == btnExit) {
 			if (client != null) {
@@ -819,28 +837,16 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		return level;
 	}
 
-	public void dropNotes(String titleName) {
-		
-		Note note1 = new Note(140, 70, 1200);
-		Note note2 = new Note(140, 70, 2200);
-		Note note3 = new Note(140, 70, 3200);
-		Note note4 = new Note(140, 70, 4200);
-		Note note5 = new Note(140, 70, 5200);
-		Note note6 = new Note(140, 70, 7200);
-		Note note7 = new Note(140, 70, 8300);
-		Note note8 = new Note(140, 70, 9300);
-		Note note9 = new Note(140, 70, 10300);
-	
-		noteList.add(note1);
-		noteList.add(note2);
-		noteList.add(note3);
-		noteList.add(note4);
-		noteList.add(note5);
-		noteList.add(note6);
-		noteList.add(note7);
-		noteList.add(note8);
-		noteList.add(note9);
-
+	public void judgeDraw(Graphics g) {
+		if (isJudge) {
+			if (judge == 0) {
+				g.drawImage(missImage, BLOCK_SIZE * minX + 75, BOARD_Y + BLOCK_SIZE + 10, null);
+			} else if (judge == 1) {
+				g.drawImage(goodImage, BLOCK_SIZE * minX + 75, BOARD_Y + BLOCK_SIZE + 10, null);
+			} else if (judge == 2) {
+				g.drawImage(perfectImage, BLOCK_SIZE * minX + 75, BOARD_Y + BLOCK_SIZE + 10, null);
+			}
+		}
 
 	}
 
