@@ -464,7 +464,10 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		else
 			removeLineCombo = 0; // 연속으로 못 지우면 콤보 0으로
 
-		this.getFixBlockCallBack(blockList, removeLineCombo, removeLineCount);
+        if(!isRhythm) { // 리듬게임을 진행하는 경우 아이템 사용 못하게 막음
+            this.getFixBlockCallBack(blockList, removeLineCombo, removeLineCount);
+        }
+
 
 		this.nextTetrisBlock();
 
@@ -778,6 +781,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 				gameMusic.start();
 
 			}
+			
 		} else if (e.getSource() == btnExit) {
 			if (client != null) {
 				if (tetris.isNetwork()) {
