@@ -275,7 +275,7 @@ class GameHandler extends Thread {
 		} else if (itemNum == 3) { // 일정 시간동안 자신에게 일자 블럭만 내려오게 하기
 			data.setMsg(index + "P USE LINE_BLOCK ITEM !!!");
 		} else if (itemNum == 4) { // 일정 시간동안 상대 화면 가리기
-
+			data.setMsg(index + "P USE CLOUD ITEM !!!");
 		}
 		data.setIndex(index); // 자신에게는 적용하지 않기 위해
 
