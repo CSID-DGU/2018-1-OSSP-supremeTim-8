@@ -6,6 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/USER/Documents/2018-1-OSSP-supremeTim-8/Tetris/src/jlayer1.0.1/JLayer1.0.1/jl1.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/USER/eclipse-workspace/Tetris__/jl1.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
