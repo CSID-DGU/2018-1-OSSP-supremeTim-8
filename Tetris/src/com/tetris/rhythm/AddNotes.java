@@ -1,5 +1,6 @@
 package com.tetris.rhythm;
 
+import java.io.*;
 import java.util.*;
 
 public class AddNotes {
@@ -8,7 +9,7 @@ public class AddNotes {
 	private String titleName;
 	
 
-	public AddNotes(String titleName, ArrayList<Note> noteList) {
+	public AddNotes(String titleName, ArrayList<Note> noteList) throws IOException {
 		this.titleName = titleName;
 		this.noteList = noteList;
 		
@@ -115,25 +116,13 @@ public class AddNotes {
 		
 	}
 	
-	public void loveNote() {
-		Note note1 = new Note(140, 20, 300);
-		Note note2 = new Note(140, 20, 900);
-		Note note3 = new Note(140, 20, 1200);
-		Note note4 = new Note(140, 20, 2000);
-		Note note5 = new Note(140, 20, 2500);
-		Note note6 = new Note(140, 20, 3000);
-		Note note7 = new Note(140, 20, 3500);
-		Note note8 = new Note(140, 20, 4000);
-		Note note9 = new Note(140, 20, 4500);
-
-		noteList.add(note1);
-		noteList.add(note2);
-		noteList.add(note3);
-		noteList.add(note4);
-		noteList.add(note5);
-		noteList.add(note6);
-		noteList.add(note7);
-		noteList.add(note8);
-		noteList.add(note9);
+	public void loveNote() throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("./src/music/what is love note.txt"));
+		while(true) {
+			String line = br.readLine();
+			if(line == null) break;
+			System.out.println(line);
+			noteList.add(new Note(140,20,Integer.parseInt(line)-1000));
+		}
 	}
 }
