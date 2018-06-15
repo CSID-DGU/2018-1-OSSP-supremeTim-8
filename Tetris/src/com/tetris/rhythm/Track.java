@@ -5,7 +5,14 @@ public class Track {
 	private String gameImage; 
 	private String startMusic;
 	private String gameMusic;
+	private int endTime;
 	
+	public int getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(int endTime) {
+		this.endTime = endTime;
+	}
 	public String getTitle() {
 		return title;
 	}
@@ -33,12 +40,13 @@ public class Track {
 	public String getGameImage() {
 		return gameImage;
 	}
-	public Track(String title, String gameImage, String startMusic, String gameMusic) {
+	public Track(String title, String gameImage, String startMusic, String gameMusic, int endTime) {
 		super();
 		this.title = title;
 		this.gameImage = gameImage;
 		this.startMusic = startMusic;
 		this.gameMusic = gameMusic;
+		this.endTime = endTime;
 	}
 	
 	

@@ -25,23 +25,19 @@ public class RhythmGame extends JDialog {
 	private Music selectMusic; // 곡의 하이라이트
 	private Music gameMusic; // 곡
 	private int nowSelected = 0;
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> 921c52889ef6edf75c11f0b70a163dbeee66488a
 	public RhythmGame() {
-		
+
 		selecteMusic(); // 곡선택
-		
+
 	}
 
 	public void selecteMusic() {
 
 		trackList.add(new Track("젓가락 행진곡", "./src/image/chopstick image.jpg", "chopstick start music.mp3",
-				"chopstick music.mp3"));
+				"chopstick music.mp3", 7000));// 76000));
 		trackList.add(new Track("What is Love?", "./src/image/what is love image.jpg", "what is love start music.mp3",
-				"what is love music.mp3"));
+				"what is love music.mp3", 209000));
 		selectTrack(0);
 
 		this.setTitle("리듬게임 곡 선택");
@@ -49,7 +45,7 @@ public class RhythmGame extends JDialog {
 		this.setLocation(100, 100);
 		this.setModal(true);
 
-		//leftButton.setBounds(60, 60, 60, 60);
+		// leftButton.setBounds(60, 60, 60, 60);
 		leftButton.setBorderPainted(false);
 		leftButton.setContentAreaFilled(false);
 		leftButton.setFocusPainted(false);
@@ -69,7 +65,7 @@ public class RhythmGame extends JDialog {
 			}
 		});
 
-		//rightButton.setBounds(140, 310, 60, 60);
+		// rightButton.setBounds(140, 310, 60, 60);
 		rightButton.setBorderPainted(false);
 		rightButton.setContentAreaFilled(false);
 		rightButton.setFocusPainted(false);
@@ -89,20 +85,15 @@ public class RhythmGame extends JDialog {
 			}
 		});
 
-		selectButton.addMouseListener(new MouseAdapter(){
+		selectButton.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				selectMusic.close(); // 음악 종료
-<<<<<<< HEAD
-				
+
 				dispose(); // JDialog 종료
-=======
-				dispose(); // JDialog 종료
-				gameMusic.start();
->>>>>>> 921c52889ef6edf75c11f0b70a163dbeee66488a
-				
+
 			}
 		});
-		
+
 		add(leftButton, BorderLayout.WEST);
 		add(rightButton, BorderLayout.EAST);
 		add(selectButton, BorderLayout.SOUTH);
@@ -116,10 +107,6 @@ public class RhythmGame extends JDialog {
 		g.drawImage(image, 100, 100, null);
 		g.drawString(trackList.get(nowSelected).getTitle(), 160, 300);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 921c52889ef6edf75c11f0b70a163dbeee66488a
 	}
 
 	public void selectTrack(int nowSelected) {
@@ -149,21 +136,23 @@ public class RhythmGame extends JDialog {
 		selectTrack(nowSelected);
 		this.repaint();
 	}
-<<<<<<< HEAD
-	
+
 	public void gameStart(int nowSelected) {
-		if(selectMusic != null) 
+		if (selectMusic != null)
 			selectMusic.close();
-		
+
 	}
-	
-	public Music getGameMusic(){
+
+	public Music getGameMusic() {
 		return gameMusic;
 	}
-	
+
 	public String getGameTitle() {
 		return trackList.get(nowSelected).getTitle();
 	}
-=======
->>>>>>> 921c52889ef6edf75c11f0b70a163dbeee66488a
+
+	public int getEndTime() {
+		return trackList.get(nowSelected).getEndTime();
+	}
+
 }

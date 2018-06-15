@@ -21,42 +21,38 @@ import com.tetris.network.DB;
 import com.tetris.network.GameClient;
 import com.tetris.network.GameServer;
 
-<<<<<<< HEAD
-public class Tetris extends JFrame implements ActionListener {
-=======
+
+
+
 public class Tetris extends JFrame implements ActionListener, MenuListener {
->>>>>>> 921c52889ef6edf75c11f0b70a163dbeee66488a
+
 	private static final long serialVersionUID = 1L;
 	private GameServer server;
 	private GameClient client;
 	private TetrisBoard board = new TetrisBoard(this, client);
 	private JMenuItem itemServerStart = new JMenuItem("서버로 접속하기");
 	private JMenuItem itemClientStart = new JMenuItem("클라이언트로 접속하기");
-<<<<<<< HEAD
 
-=======
 	private JMenu mnRank=new JMenu("랭킹보기") ;
 	
->>>>>>> 921c52889ef6edf75c11f0b70a163dbeee66488a
 	private boolean isNetwork;
 	private boolean isServer;
 
 	public Tetris() {
 		JMenuBar mnBar = new JMenuBar();
 		JMenu mnGame = new JMenu("게임하기");
-<<<<<<< HEAD
+
 
 		mnGame.add(itemServerStart);
 		mnGame.add(itemClientStart);
 		mnBar.add(mnGame);
 
-=======
 		mnGame.add(itemServerStart);
 		mnGame.add(itemClientStart);
 		mnBar.add(mnGame);
 		mnBar.add(mnRank);
 		mnBar.setSize(10,100);
->>>>>>> 921c52889ef6edf75c11f0b70a163dbeee66488a
+
 		this.setJMenuBar(mnBar);
 
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -208,13 +204,11 @@ public class Tetris extends JFrame implements ActionListener, MenuListener {
 	public void setServer(boolean isServer) {
 		this.isServer = isServer;
 	}
-<<<<<<< HEAD
 
-=======
 	public void clientChangeSpeed(Integer speed) {
 		client.reChangSpeed(speed);
 	}
->>>>>>> 921c52889ef6edf75c11f0b70a163dbeee66488a
+
 	public void changeSpeed(Integer speed) {
 		board.changeSpeed(speed);
 	}
@@ -222,8 +216,4 @@ public class Tetris extends JFrame implements ActionListener, MenuListener {
 	public int getLevel() {
 		return board.getLevel();
 	}
-<<<<<<< HEAD
-=======
-
->>>>>>> 921c52889ef6edf75c11f0b70a163dbeee66488a
 }

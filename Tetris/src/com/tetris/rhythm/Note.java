@@ -14,13 +14,15 @@ public class Note extends Thread{
 	private Image noteImage = new ImageIcon("./src/image/note.png").getImage();
 	public int x, count, y =0;
 	private int time;
+	public boolean space = false;
 	public boolean drop_judge=false;
 	
 
-	public Note(int x, int y, int time) {
+	public Note(int x, int y, int time, boolean space) {
 		this.x = x;
 		//this.y = y;
 		this.time = time;
+		this.space = space;
 		t=new Thread(this);
 	}
 
@@ -39,6 +41,7 @@ public class Note extends Thread{
 	public int getY() {
 		return y;
 	}
+	
 	public void start_drop() {
 		this.drop_judge=true;
 		t.start();

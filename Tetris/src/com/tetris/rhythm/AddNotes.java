@@ -20,24 +20,24 @@ public class AddNotes {
 	}
 
 	public void chopNote() {
-		noteList.add(new Note(140,20,100));
+		noteList.add(new Note(140,20,100, true));
 		for(int time=1200;time<=5200;time+=1000) {
-			noteList.add(new Note(140,20,time));
+			noteList.add(new Note(140,20,time,true));
 		}
 		for(int time=7300;time<=16300;time+=1000) {
-			noteList.add(new Note(140,20,time));
+			noteList.add(new Note(140,20,time, true));
 		}
 		for(int time=17600;time<=31600;time+=1000) {
-			noteList.add(new Note(140,20,time));
+			noteList.add(new Note(140,20,time, true));
 		}
 		for(int time=32900;time<=40900;time+=1000) {
-			noteList.add(new Note(140,20,time));
+			noteList.add(new Note(140,20,time, true));
 		}
 		for(int time=42200;time<=48200;time+=1000) {
-			noteList.add(new Note(140,20,time));
+			noteList.add(new Note(140,20,time, true));
 		}
 		for(int time=49500;time<=105500;time+=1000) {
-			noteList.add(new Note(140,20,time));
+			noteList.add(new Note(140,20,time, true));
 		}
 		/*Note note1 = new Note(140, 20, 100);
 		Note note2 = new Note(140, 20, 1200);
@@ -122,7 +122,7 @@ public class AddNotes {
 			String line = br.readLine();
 			if(line == null) break;
 			System.out.println(line);
-			noteList.add(new Note(140,20,Integer.parseInt(line)-1000));
+			noteList.add(new Note(140,20,Integer.parseInt(line)-1000, false));
 		}
 	}
 }
