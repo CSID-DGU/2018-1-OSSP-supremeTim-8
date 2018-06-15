@@ -25,7 +25,11 @@ public class RhythmGame extends JDialog {
 	private Music selectMusic; // 곡의 하이라이트
 	private Music gameMusic; // 곡
 	private int nowSelected = 0;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> 921c52889ef6edf75c11f0b70a163dbeee66488a
 	public RhythmGame() {
 		
 		selecteMusic(); // 곡선택
@@ -88,8 +92,13 @@ public class RhythmGame extends JDialog {
 		selectButton.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e) {
 				selectMusic.close(); // 음악 종료
+<<<<<<< HEAD
 				
 				dispose(); // JDialog 종료
+=======
+				dispose(); // JDialog 종료
+				gameMusic.start();
+>>>>>>> 921c52889ef6edf75c11f0b70a163dbeee66488a
 				
 			}
 		});
@@ -107,7 +116,10 @@ public class RhythmGame extends JDialog {
 		g.drawImage(image, 100, 100, null);
 		g.drawString(trackList.get(nowSelected).getTitle(), 160, 300);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 921c52889ef6edf75c11f0b70a163dbeee66488a
 	}
 
 	public void selectTrack(int nowSelected) {
@@ -137,6 +149,7 @@ public class RhythmGame extends JDialog {
 		selectTrack(nowSelected);
 		this.repaint();
 	}
+<<<<<<< HEAD
 	
 	public void gameStart(int nowSelected) {
 		if(selectMusic != null) 
@@ -151,4 +164,6 @@ public class RhythmGame extends JDialog {
 	public String getGameTitle() {
 		return trackList.get(nowSelected).getTitle();
 	}
+=======
+>>>>>>> 921c52889ef6edf75c11f0b70a163dbeee66488a
 }
