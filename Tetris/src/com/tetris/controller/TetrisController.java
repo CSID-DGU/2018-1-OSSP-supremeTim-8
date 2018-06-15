@@ -23,6 +23,8 @@ public class TetrisController {
 		
 	}
 	
+	
+	
 	public void setBlock(TetrisBlock block){
 		this.block = block;
 		this.rotation_index = block.getRotationIndex();

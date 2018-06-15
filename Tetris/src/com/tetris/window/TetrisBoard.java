@@ -11,6 +11,7 @@ import javax.swing.event.*;
 import com.tetris.classes.*;
 import com.tetris.controller.*;
 import com.tetris.network.*;
+import com.tetris.network.DB;
 import com.tetris.rhythm.*;
 import com.tetris.shape.*;
 
@@ -484,7 +485,13 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		boolean isCombo = false;
 		int count = 0;
 		Block mainBlock;
-
+		for(int i=0;i<blockList.size();i++) { //모든 블럭 전부 확
+			mainBlock = blockList.get(i);
+			if (mainBlock.getY() == 0 ) // 게임오버(좌상단이 0,0)
+			{	this.gameEndCallBack();
+				break;
+			}
+		}
 		for (int i = 0; i < blockList.size(); i++) {
 			mainBlock = blockList.get(i);
 
@@ -494,10 +501,6 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 			if (mainBlock.getY() < maxY && mainBlock.getX() < maxX) // 아래에 있던 블록위에 올림
 				map[mainBlock.getY()][mainBlock.getX()] = mainBlock;
 
-			if (mainBlock.getY() == 1 && mainBlock.getX() > 2 && mainBlock.getX() < 7) { // 게임오버(좌상단이 0,0)
-				this.gameEndCallBack();
-				break;
-			}
 
 			count = 0;
 			for (int j = 0; j < maxX; j++) {
@@ -551,6 +554,8 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	public void gameEndCallBack() {
 		client.gameover();
 		this.isPlay = false;
+		new DB(nickName,removeLineSum);
+		new DB();
 	}
 
 	private void showGhost() {

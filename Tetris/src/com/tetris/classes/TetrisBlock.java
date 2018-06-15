@@ -26,13 +26,14 @@ public abstract class TetrisBlock {
 	
 	
 	protected int type;								
-	protected Block[] colBlock= new Block[4];
-	protected Block[] noteBlock = new Block[10];
+	protected Block[] colBlock= new Block[4];		
 	protected int rotation_index;					
 	protected int posX,posY;						
 	protected Color color;							
 	
-
+	
+	
+	
 	public TetrisBlock(int x, int y, Color color, Color ghostColor) {
 		this.color = color;
 		for(int i=0 ; i<colBlock.length ; i++){
@@ -43,15 +44,6 @@ public abstract class TetrisBlock {
 		this.setPosY(y);
 	}
 	
-	public TetrisBlock(int x, int y, Color color) {
-		this.color = color;
-		for(int i = 0; i < noteBlock.length; i++) {
-			noteBlock[i] = new Block(0, 0, color, null);
-		}
-		this.rotation(ROTATION_0);
-		this.setPosX(x);
-		this.setPosY(y);
-	}
 	
 	
 	public abstract void rotation(int rotation_index);
