@@ -35,7 +35,7 @@ public class RhythmGame extends JDialog {
 	public void selecteMusic() {
 
 		trackList.add(new Track("젓가락 행진곡", "./src/image/chopstick image.jpg", "chopstick start music.mp3",
-				"chopstick music.mp3", 7000));// 76000));
+				"chopstick music.mp3", 66000));// 76000));
 		trackList.add(new Track("What is Love?", "./src/image/what is love image.jpg", "what is love start music.mp3",
 				"what is love music.mp3", 209000));
 		selectTrack(0);

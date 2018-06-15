@@ -17,7 +17,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/2018-1-OSSP-supremeTim-8/mysql-connector-java-8.0.11.jar"/>
-	<classpathentry kind="lib" path="D:/2018-1-OSSP-supremeTim-8/jl1.0.1.jar"/>
+	<classpathentry kind="lib" path="/home/sun/Documents/2018-1-OSSP-supremeTim-8/jl1.0.1.jar"/>
+	<classpathentry kind="lib" path="/home/sun/Documents/2018-1-OSSP-supremeTim-8/mysql-connector-java-8.0.11.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

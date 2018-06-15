@@ -59,6 +59,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	private TetrisController controller;
 	private TetrisController controllerGhost;
 
+	public boolean isMulti=false;
 	private boolean isPlay = false;
 	private boolean isHold = false;
 	private boolean usingGhost = true;
@@ -503,11 +504,12 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		int count = 0;
 		Block mainBlock;
 
-		for(int i=0;i<blockList.size();i++) { //모든 블럭 전부 확정
+		for(int i=0;i<blockList.size();i++) { //모든 블럭 전부 확인
 	         mainBlock = blockList.get(i);
 	         if (mainBlock.getY() == 0 ) // 게임오버(좌상단이 0,0)
-	         {   this.gameEndCallBack();
-	            break;
+	         {  
+	        	 this.gameEndCallBack();
+	             return isCombo;
 	         }
 	      }
 	      for (int i = 0; i < blockList.size(); i++) {
@@ -575,8 +577,13 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	public void gameEndCallBack() {
 		client.gameover();
 		this.isPlay = false;
-		new DB(nickName,score);
-		new DB();
+		if(!isMulti) {
+			if(isRhythm)
+				new DB(nickName,score,rtGame.getGameTitle());
+			else
+				new DB(nickName,score," ");
+		}
+		
 		return;
 	}
 	
@@ -749,9 +756,9 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		} else if (e.getKeyCode() == KeyEvent.VK_UP) {
 			controller.nextRotationLeft();
 			controllerGhost.nextRotationLeft();
+
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			//System.out.println(gameMusic.getTime());
-			
+
 			if (isRhythm) {
 				miss = 0;
 				isJudge = true;
