@@ -506,7 +506,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 
 		for(int i=0;i<blockList.size();i++) { //모든 블럭 전부 확인
 	         mainBlock = blockList.get(i);
-	         if (mainBlock.getY() == 0 ) // 게임오버(좌상단이 0,0)
+	         if (mainBlock.getY() == 0 ) // 게임오버
 	         {  
 	        	 this.gameEndCallBack();
 	             return isCombo;

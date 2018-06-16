@@ -239,16 +239,7 @@ class menu_rank extends JFrame implements MenuListener{
 				this.setLocation((size.width-this.getWidth())/2,(size.height-this.getHeight())/2-200); //스크린 중앙에 위치 
 				this.setVisible(true);
 	}
-	
-	@Override
-	public void menuCanceled(MenuEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void menuDeselected(MenuEvent e) {
-		// TODO Auto-generated method stub
-	}
+
 	@Override
 	public void menuSelected(MenuEvent e) {
 		// TODO Auto-generated method stub
@@ -258,5 +249,15 @@ class menu_rank extends JFrame implements MenuListener{
 			new DB(1,0,false);
 		else if(e.getSource()==ch3)
 			new DB(2,0,false);
+	}	
+		@Override
+		public void menuCanceled(MenuEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void menuDeselected(MenuEvent e) {
+			// TODO Auto-generated method stub
+	
 	}
 }
