@@ -21,13 +21,18 @@ import com.tetris.network.DB;
 import com.tetris.network.GameClient;
 import com.tetris.network.GameServer;
 
+
+
+
 public class Tetris extends JFrame implements ActionListener, MenuListener {
+
 	private static final long serialVersionUID = 1L;
 	private GameServer server;
 	private GameClient client;
 	private TetrisBoard board = new TetrisBoard(this, client);
 	private JMenuItem itemServerStart = new JMenuItem("서버로 접속하기");
 	private JMenuItem itemClientStart = new JMenuItem("클라이언트로 접속하기");
+
 	private JMenu mnRank=new JMenu("랭킹보기") ;
 	
 	private boolean isNetwork;
@@ -36,11 +41,18 @@ public class Tetris extends JFrame implements ActionListener, MenuListener {
 	public Tetris() {
 		JMenuBar mnBar = new JMenuBar();
 		JMenu mnGame = new JMenu("게임하기");
+
+
+		mnGame.add(itemServerStart);
+		mnGame.add(itemClientStart);
+		mnBar.add(mnGame);
+
 		mnGame.add(itemServerStart);
 		mnGame.add(itemClientStart);
 		mnBar.add(mnGame);
 		mnBar.add(mnRank);
 		mnBar.setSize(10,100);
+
 		this.setJMenuBar(mnBar);
 
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -77,7 +89,7 @@ public class Tetris extends JFrame implements ActionListener, MenuListener {
 	@Override
 	public void menuSelected(MenuEvent e) {
 		if(e.getSource()==mnRank) {
-			new DB();
+			new menu_rank();
 		}
 	}
 	public void menuDeselected(MenuEvent e) {
@@ -139,6 +151,7 @@ public class Tetris extends JFrame implements ActionListener, MenuListener {
 					board.setClient(client);
 					board.startNetworking(ip, port, nickName);
 					isNetwork = true;
+					board.isMulti=true;
 				}
 			}
 		}
@@ -192,9 +205,11 @@ public class Tetris extends JFrame implements ActionListener, MenuListener {
 	public void setServer(boolean isServer) {
 		this.isServer = isServer;
 	}
+
 	public void clientChangeSpeed(Integer speed) {
 		client.reChangSpeed(speed);
 	}
+
 	public void changeSpeed(Integer speed) {
 		board.changeSpeed(speed);
 	}
@@ -202,5 +217,47 @@ public class Tetris extends JFrame implements ActionListener, MenuListener {
 	public int getLevel() {
 		return board.getLevel();
 	}
+}
+class menu_rank extends JFrame implements MenuListener{
+	JMenu ch1 = new JMenu("일반게임");
+	JMenu ch2 = new JMenu("젓가락 행진곡");
+	JMenu ch3 = new JMenu("what is love?");
+	public menu_rank() {
+		JMenuBar chBar = new JMenuBar();
+		chBar.add(ch1);
+		chBar.add(ch2);
+		chBar.add(ch3);
+		ch1.addMenuListener(this);
+		ch2.addMenuListener(this);
+		ch3.addMenuListener(this);
+		chBar.setSize(10,70);
 
+		this.setJMenuBar(chBar);
+		this.setSize(500,100);
+		//화면 중앙에 띄우기
+				Dimension size = Toolkit.getDefaultToolkit().getScreenSize(); //스크린전체사이즈
+				this.setLocation((size.width-this.getWidth())/2,(size.height-this.getHeight())/2-200); //스크린 중앙에 위치 
+				this.setVisible(true);
+	}
+
+	@Override
+	public void menuSelected(MenuEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getSource()==ch1)
+			new DB(0,0,false);
+		else if(e.getSource()==ch2)
+			new DB(1,0,false);
+		else if(e.getSource()==ch3)
+			new DB(2,0,false);
+	}	
+		@Override
+		public void menuCanceled(MenuEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void menuDeselected(MenuEvent e) {
+			// TODO Auto-generated method stub
+	
+	}
 }

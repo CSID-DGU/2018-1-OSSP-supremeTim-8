@@ -1,37 +1,19 @@
 package com.tetris.window;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.Random; // 아이템을 랜덤으로 정하기 위해 import
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+// 아이템을 랜덤으로 정하기 위해 import
+import java.util.*;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.*;
+import javax.swing.event.*;
 
-import com.tetris.classes.Block;
-import com.tetris.classes.TetrisBlock;
-import com.tetris.controller.TetrisController;
-import com.tetris.network.DB;
-import com.tetris.network.GameClient;
-import com.tetris.shape.CenterUp;
-import com.tetris.shape.LeftTwoUp;
-import com.tetris.shape.LeftUp;
-import com.tetris.shape.Line;
-import com.tetris.shape.Nemo;
-import com.tetris.shape.RightTwoUp;
-import com.tetris.shape.RightUp;
+import com.tetris.classes.*;
+import com.tetris.controller.*;
+import com.tetris.network.*;
+import com.tetris.rhythm.*;
+import com.tetris.shape.*;
 
 public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseListener, ActionListener {
 	private static final long serialVersionUID = 1L;
@@ -49,7 +31,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	private final int PANEL_WIDTH = maxX * BLOCK_SIZE + MESSAGE_WIDTH + BOARD_X;
 	private final int PANEL_HEIGHT = maxY * BLOCK_SIZE + MESSAGE_HEIGHT + BOARD_Y;
 
-	private final int MAX_ITEM_NUM = 3; // 아직 구현한 아이템 총 2개
+	private final int MAX_ITEM_NUM = 4; // 아직 구현한 아이템 총 3개
 	private final int MIN_ITEM_NUM = 1;
 
 	private SystemMessageArea systemMsg = new SystemMessageArea(BLOCK_SIZE * 1, BOARD_Y + BLOCK_SIZE + BLOCK_SIZE * 7,
@@ -59,7 +41,8 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	private JButton btnStart = new JButton("시작하기");
 	private JButton btnExit = new JButton("나가기");
 	private JCheckBox checkGhost = new JCheckBox("고스트모드", true);
-	private JCheckBox checkGrid = new JCheckBox("격자 표시", true);
+	private JButton btnRhythm = new JButton("리듬게임"); // 리듬게임을 시작할 수 있는 버튼
+	// private JCheckBox checkGrid = new JCheckBox("격자 표시", true);
 	private Integer[] lv = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
 	private JComboBox<Integer> comboSpeed = new JComboBox<Integer>(lv);
 
@@ -76,15 +59,33 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	private TetrisController controller;
 	private TetrisController controllerGhost;
 
+	public boolean isMulti=false;
 	private boolean isPlay = false;
 	private boolean isHold = false;
 	private boolean usingGhost = true;
 	private boolean usingGrid = true;
 	private int removeLineCount = 0; // 지운 줄의 개수
-	private int removeLineSum = 0; // 총 점수
 	private int removeLineTemp = 0; // 레벨을 올려주기 위한 점수의 합 (레벨이 올라가면 초기화)
 	private int removeLineCombo = 0;
 	private int level = 1;
+	private RhythmGame rtGame;
+	private Music gameMusic;
+	private boolean isRhythm = false;
+	public boolean isCloud = false; // 구름 아이템 적용을 위한 boolean 변수
+	private Image cloudImage = new ImageIcon("./src/image/cloud.jpg").getImage();
+
+	private Image perfectImage = new ImageIcon("./src/image/perfect.png").getImage();
+	private Image goodImage = new ImageIcon("./src/image/good.png").getImage();
+	private Image missImage = new ImageIcon("./src/image/miss.png").getImage();
+	private int judge;
+	private boolean isJudge = false;
+	private int score = 0;
+	private int miss = 0;
+	private boolean flag = false;
+
+	ArrayList<Note> noteList = new ArrayList<Note>();
+
+	Music openingMusic = new Music("opening_music.mp3", true);
 
 	public TetrisBoard(Tetris tetris, GameClient client) {
 		this.tetris = tetris;
@@ -104,6 +105,9 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 				messageArea.getHeight() / 2);
 		btnExit.setFocusable(false);
 		btnExit.addActionListener(this); // 끝내기 버튼 만들고 입력 기다림
+		btnRhythm.setBounds(PANEL_WIDTH - BLOCK_SIZE * 7 + 35, 25, 95, 20);
+		btnRhythm.setFocusable(false);
+		btnRhythm.addActionListener(this); // 리듬게임 버튼
 		checkGhost.setBounds(PANEL_WIDTH - BLOCK_SIZE * 7 + 35, 5, 95, 20);
 		checkGhost.setBackground(new Color(0, 87, 102));
 		checkGhost.setForeground(Color.WHITE);
@@ -116,18 +120,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 				TetrisBoard.this.repaint();
 			}
 		});
-		checkGrid.setBounds(PANEL_WIDTH - BLOCK_SIZE * 7 + 35, 25, 95, 20);
-		checkGrid.setBackground(new Color(0, 87, 102));
-		checkGrid.setForeground(Color.WHITE);
-		checkGrid.setFont(new Font("굴림", Font.BOLD, 13));
-		checkGrid.addChangeListener(new ChangeListener() { // 그리드 체크 박스 만들고
-			@Override
-			public void stateChanged(ChangeEvent arg0) { // 사용할 건지 state 변경 확인
-				usingGrid = checkGrid.isSelected();
-				TetrisBoard.this.setRequestFocusEnabled(true);
-				TetrisBoard.this.repaint();
-			}
-		});
+
 		comboSpeed.setBounds(PANEL_WIDTH - BLOCK_SIZE * 8, 5, 45, 20);
 		// this.add(comboSpeed); // 버튼 비활성화
 
@@ -136,7 +129,11 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		this.add(btnStart);
 		this.add(btnExit);
 		this.add(checkGhost);
-		this.add(checkGrid); // 구현한 UI 모두 추가
+		this.add(btnRhythm);
+		// this.add(checkGrid); // 구현한 UI 모두 추가
+
+		// openingMusic.start();
+
 	}
 
 	public void startNetworking(String ip, int port, String nickName) {
@@ -148,7 +145,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 
 	public void gameStart(int speed) { // 게임시작 메소드
 		comboSpeed.setSelectedItem(new Integer(speed));
-		
+
 		if (th != null) { // 처음 이 메소드를 실행한 경우 th=null
 			try {
 				isPlay = false;
@@ -172,17 +169,20 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		for (int i = 0; i < 5; i++) {
 			nextBlocks.add(getRandomTetrisBlock()); // 블럭 5개 추가
 		}
-
+		
 		isPlay = true;
+		
 		//시작했을 때 다시 초기화
-		removeLineCount = 0; 
-		removeLineSum = 0; 
-		removeLineTemp = 0; 
-		removeLineCombo = 0;
-		level = 1;
-		client.reChangSpeed(1);
+	      removeLineCount = 0; 
+	      score= 0; 
+	      removeLineTemp = 0; 
+	      removeLineCombo = 0;
+	      level = 1;
+	      client.reChangSpeed(1);
+		
 		th = new Thread(this);
 		th.start(); // run 메소드 시작
+
 	}
 
 	@Override
@@ -204,7 +204,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		g.setFont(new Font("굴림", Font.BOLD, 13));
 		// g.drawString("속도", PANEL_WIDTH - BLOCK_SIZE * 10, 20); // 속도이름 지움
 		g.drawString("점수", PANEL_WIDTH - BLOCK_SIZE * 12, 20); // 점수
-		g.drawString(String.valueOf(removeLineSum), PANEL_WIDTH - BLOCK_SIZE * 12, 40);
+		g.drawString(String.valueOf(score), PANEL_WIDTH - BLOCK_SIZE * 12, 40);
 		g.drawString("LEVEL", PANEL_WIDTH - BLOCK_SIZE * 9, 20); // 레벨 (1~10)
 		g.drawString(String.valueOf(level), PANEL_WIDTH - BLOCK_SIZE * 8 - 5, 40);
 		g.setFont(font);
@@ -248,6 +248,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		}
 
 		int x = 0, y = 0, newY = 0;
+
 		if (hold != null) {
 			x = 0;
 			y = 0;
@@ -321,10 +322,56 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 			shap.setPosX(x);
 			shap.setPosY(y);
 		}
+
+		if (isRhythm) {
+			if(gameMusic.getTime() >= rtGame.getEndTime()) {
+				
+				gameMusic.close();
+				gameEndCallBack();
+				
+			}			
+			for (int i = 0; i < noteList.size(); i++) {
+				Note note = noteList.get(i);
+				if (note.getTime() <= gameMusic.getTime()) {
+					// note.count = gameMusic.getTime();
+					if (note.drop_judge == false)
+						note.start_drop();
+					note.screenDraw(g);
+				}
+
+				judgeDraw(g);
+
+				if(flag == false) {
+					judgeScore();
+					flag = true;
+				}
+				
+				if (note.getY() >= 540) {
+					flag = false;
+					note.stop_drop();
+					noteList.remove(i);
+					if (note.space == false)
+						miss = 1;
+
+					i--;
+				}
+
+				// if(isJudge)
+
+				// isJudge = false;
+			}
+
+		}
+		if (isCloud) {
+			g.drawImage(cloudImage, 140, 200, null); // 이미지로 가림
+		}
+
 	}
+
 
 	@Override
 	public void run() {
+
 		int countMove = (21 - (int) comboSpeed.getSelectedItem()) * 5;
 		/*
 		 * 스피드가 1이면 100 -> 값이 커질수록 moveDown() 호출 적어짐 -> 블럭 내려오는 속도 느림
@@ -443,7 +490,9 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		else
 			removeLineCombo = 0; // 연속으로 못 지우면 콤보 0으로
 
-		this.getFixBlockCallBack(blockList, removeLineCombo, removeLineCount);
+		if (!isRhythm) { // 리듬게임을 진행하는 경우 아이템 사용 못하게 막음
+			this.getFixBlockCallBack(blockList, removeLineCombo, removeLineCount);
+		}
 
 		this.nextTetrisBlock();
 
@@ -454,24 +503,25 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		boolean isCombo = false;
 		int count = 0;
 		Block mainBlock;
-		for(int i=0;i<blockList.size();i++) { //모든 블럭 전부 확
-			mainBlock = blockList.get(i);
-			if (mainBlock.getY() == 0 )//&& mainBlock.getX() > 2 && mainBlock.getX() < 7) { // 게임오버(좌상단이 0,0)
-			{	this.gameEndCallBack();
-				break;
-			}
-		}
-		for (int i = 0; i < blockList.size(); i++) {
-			mainBlock = blockList.get(i);
 
-			if (mainBlock.getY() < 0 || mainBlock.getY() >= maxY) // 벗어나는 경우 for문으로 다시 돌아감
-				continue;
-			if (mainBlock.getY() < maxY && mainBlock.getX() < maxX)  // 아래에 있던 블록위에 올림
-				map[mainBlock.getY()][mainBlock.getX()] = mainBlock;
-			
+		for(int i=0;i<blockList.size();i++) { //모든 블럭 전부 확인
+	         mainBlock = blockList.get(i);
+	         if (mainBlock.getY() == 0 ) // 게임오버
+	         {  
+	        	 this.gameEndCallBack();
+	             return isCombo;
+	         }
+	      }
+	      for (int i = 0; i < blockList.size(); i++) {
+	         mainBlock = blockList.get(i);
+
+	         if (mainBlock.getY() < 0 || mainBlock.getY() >= maxY) // 벗어나는 경우 for문으로 다시 돌아감
+	            continue;
+
+	         if (mainBlock.getY() < maxY && mainBlock.getX() < maxX) // 아래에 있던 블록위에 올림
+	            map[mainBlock.getY()][mainBlock.getX()] = mainBlock;
+
 		
-			
-
 			count = 0;
 			for (int j = 0; j < maxX; j++) {
 				if (map[mainBlock.getY()][j] != null) // 가로줄이 채워지는 과정 체크
@@ -479,17 +529,20 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 
 			}
 
+
 			if (count == maxX) { // 가로줄이 모두 채워지면
 				removeLineCount++; // 지운 줄 추가
 				removeLineTemp += removeLineCount * 10; // 속도 점수 계산
-				removeLineSum += removeLineCount * 10; // 점수 계산
+				score += removeLineCount * 10; // 점수 계산
+
 				if (removeLineTemp >= 100) { // 속도 점수가 100이 넘으면 레벨 업
-					client.reChangSpeed(2*level++); // 해당 클라이언트의 속도는 2, 4, 6, 8 .. 로 올라감
+					tetris.changeSpeed(2 * level++); // 속도는 2, 4, 6, 8 .. 로 올라감
 					removeLineTemp = 0; // 속도 점수 초기화
 				}
 				this.removeBlockLine(mainBlock.getY()); // 줄 지움
 				isCombo = true; // 콤보 true
 			}
+
 		}
 		return isCombo;
 	}
@@ -524,10 +577,16 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	public void gameEndCallBack() {
 		client.gameover();
 		this.isPlay = false;
-		new DB(nickName,removeLineSum);
-		new DB();
+		if(!isMulti) {
+			if(isRhythm)
+				new DB(nickName,score,rtGame.getGameTitle());
+			else
+				new DB(nickName,score," ");
+		}
+		
+		return;
 	}
-
+	
 	private void showGhost() {
 		ghost = getBlockClone(shap, true);
 		controllerGhost.setBlock(ghost);
@@ -590,44 +649,36 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 
 	public void getFixBlockCallBack(ArrayList<Block> blockList, int removeCombo, int removeMaxLine) {
 		// 일정 블럭을 지우면 아이템이 랜덤으로 등장
-		if (removeCombo < 3) {
+		// 콤보를 기준으로 마지막에 지운 라인 수가 몇이냐에 따라 액션 취함
+		if (removeCombo == 2) {
 			if (removeMaxLine == 3) {
-				client.addBlock(1);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));// 아이템 랜덤으로 생성, 1~4 랜덤으로 넘겨줌
+				client.addBlock(2);
 			} else if (removeMaxLine == 4) {
 				client.addBlock(3);
+			} else {
+				client.addBlock(1);
+			}
+		} else if (removeCombo == 3) {
+			if (removeMaxLine == 3) {
+				client.addBlock(1);
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+			} else if (removeMaxLine == 4) {
+				client.addBlock(2);
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+			} else {
 				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
 			}
 
-		} else if (removeCombo < 10) {
-			if (removeMaxLine == 3) {
-				client.addBlock(2);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			} else if (removeMaxLine == 4) {
-				client.addBlock(4);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			} else {
-				client.addBlock(1);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			}
+		} else if (removeCombo == 4) {
+			client.addBlock(3);
+		} else if (removeCombo == 5) {
+			client.addBlock(4);
+			client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
 
-		} else {
-			if (removeMaxLine == 3) {
-				client.addBlock(3);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			} else if (removeMaxLine == 4) {
-				client.addBlock(5);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			} else {
-				client.addBlock(2);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			}
 		}
 	}
 
-	public void playBlockHold() { // 블럭 Hold 메소드
-		if (isHold)
-			return;
+	public void playBlockHold() { // 블럭 Hold 메소드 if (isHold) return;
 
 		if (hold == null) {
 			hold = getBlockClone(shap, false);
@@ -688,6 +739,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	}
 
 	public void keyPressed(KeyEvent e) {
+
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			messageArea.requestFocus();
 		}
@@ -704,7 +756,27 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		} else if (e.getKeyCode() == KeyEvent.VK_UP) {
 			controller.nextRotationLeft();
 			controllerGhost.nextRotationLeft();
+
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+
+			if (isRhythm) {
+				miss = 0;
+				isJudge = true;
+				Note note = noteList.get(0);
+				note.space = true;
+				if (note.getY() <= 460) {
+					judge = 0;
+				} else if (note.getY() <= 480) {
+					judge = 1;
+				} else if (note.getY() <= 510) {
+					judge = 2;
+				} else if (note.getY() <= 530) {
+					judge = 1;
+				} else {
+					judge = 0;
+
+				}
+			}
 			controller.moveQuickDown(shap.getPosY(), true);
 			this.fixingTetrisBlock();
 		} else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
@@ -737,6 +809,18 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 			} else { // 클라이언트가 존재하지 않으면
 				this.gameStart((int) comboSpeed.getSelectedItem());
 			}
+			if (isRhythm) {
+				gameMusic = rtGame.getGameMusic();
+				try {
+					new AddNotes(rtGame.getGameTitle(), noteList);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				gameMusic.start();
+
+			}
+
 		} else if (e.getSource() == btnExit) {
 			if (client != null) {
 				if (tetris.isNetwork()) {
@@ -746,6 +830,11 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 				System.exit(0);
 			}
 
+		}
+		if (e.getSource() == btnRhythm) {
+			openingMusic.close();
+			rtGame = new RhythmGame();
+			isRhythm = true;
 		}
 	}
 
@@ -780,6 +869,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	public GameClient getClient() {
 		return client;
 	}
+
 	public void changeSpeed(Integer speed) {
 		comboSpeed.setSelectedItem(speed);
 	}
@@ -792,5 +882,35 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	public int getLevel() {
 		return level;
 	}
+
+	public void judgeDraw(Graphics g) {
+		if (isJudge) {
+			if (judge == 0 || miss == 1) {
+				g.drawImage(missImage, BLOCK_SIZE * minX + 75, BOARD_Y + BLOCK_SIZE + 10, null);
+
+			} else if (judge == 1) {
+				g.drawImage(goodImage, BLOCK_SIZE * minX + 75, BOARD_Y + BLOCK_SIZE + 10, null);
+
+			} else if (judge == 2) {
+				g.drawImage(perfectImage, BLOCK_SIZE * minX + 75, BOARD_Y + BLOCK_SIZE + 10, null);
+
+			}
+
+		}
+
+	}
+
+	public void judgeScore() {
+		if (isJudge) {
+			if (judge == 0 || miss == 1) {
+				score -= 1;
+			} else if (judge == 1) {
+				score += 5;
+			} else if (judge == 2) {
+				score +=10;
+			}
+		}
+	}
+
 
 }

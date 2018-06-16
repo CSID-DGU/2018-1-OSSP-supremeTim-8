@@ -27,17 +27,17 @@ public class RhythmGame extends JDialog {
 	private int nowSelected = 0;
 
 	public RhythmGame() {
-		
+
 		selecteMusic(); // 곡선택
-		
+
 	}
 
 	public void selecteMusic() {
 
 		trackList.add(new Track("젓가락 행진곡", "./src/image/chopstick image.jpg", "chopstick start music.mp3",
-				"chopstick music.mp3"));
+				"chopstick music.mp3", 66000));// 76000));
 		trackList.add(new Track("What is Love?", "./src/image/what is love image.jpg", "what is love start music.mp3",
-				"what is love music.mp3"));
+				"what is love music.mp3", 209000));
 		selectTrack(0);
 
 		this.setTitle("리듬게임 곡 선택");
@@ -45,7 +45,7 @@ public class RhythmGame extends JDialog {
 		this.setLocation(100, 100);
 		this.setModal(true);
 
-		//leftButton.setBounds(60, 60, 60, 60);
+		// leftButton.setBounds(60, 60, 60, 60);
 		leftButton.setBorderPainted(false);
 		leftButton.setContentAreaFilled(false);
 		leftButton.setFocusPainted(false);
@@ -65,7 +65,7 @@ public class RhythmGame extends JDialog {
 			}
 		});
 
-		//rightButton.setBounds(140, 310, 60, 60);
+		// rightButton.setBounds(140, 310, 60, 60);
 		rightButton.setBorderPainted(false);
 		rightButton.setContentAreaFilled(false);
 		rightButton.setFocusPainted(false);
@@ -85,15 +85,15 @@ public class RhythmGame extends JDialog {
 			}
 		});
 
-		selectButton.addMouseListener(new MouseAdapter(){
+		selectButton.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				selectMusic.close(); // 음악 종료
+
 				dispose(); // JDialog 종료
-				gameMusic.start();
-				
+
 			}
 		});
-		
+
 		add(leftButton, BorderLayout.WEST);
 		add(rightButton, BorderLayout.EAST);
 		add(selectButton, BorderLayout.SOUTH);
@@ -136,4 +136,23 @@ public class RhythmGame extends JDialog {
 		selectTrack(nowSelected);
 		this.repaint();
 	}
+
+	public void gameStart(int nowSelected) {
+		if (selectMusic != null)
+			selectMusic.close();
+
+	}
+
+	public Music getGameMusic() {
+		return gameMusic;
+	}
+
+	public String getGameTitle() {
+		return trackList.get(nowSelected).getTitle();
+	}
+
+	public int getEndTime() {
+		return trackList.get(nowSelected).getEndTime();
+	}
+
 }
