@@ -7,12 +7,13 @@
 이클립스(윈도우/우분투):
 
 git 설치 후 저장소를 clone해온 뒤 생성된 로컬저장소를 프로젝트에 import
-![1](../_etc/import1.png)
+![](./_etc/import1.png)
 ![](/_etc/import2.png)
 ![](/_etc/import3.png)
 ![](/_etc/import4.png)
 ![](/_etc/import5.png)
 ![](/_etc/import6.png)
+
 jar파일 설정
 ![](../header.png)
 
