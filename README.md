@@ -30,20 +30,19 @@
 
 2. 리눅스 하마치를 이용
 
-  *하마치 설치 : https://openwiki.kr/tech/hamachi_for_linux_command_line_version
+ * 하마치 설치 : https://openwiki.kr/tech/hamachi_for_linux_command_line_version
 
   ![](./_etc/socket1.PNG)
 
-  *빨간 박스 쳐저 있는 주소를 클라이언트 생성 시 주소를 입력할 때 사용
+ * 빨간 박스 쳐저 있는 주소를 클라이언트 생성 시 주소를 입력할 때 사용
   
   
 > 게임 실행 과정
 
-서버로 접속 -> 리듬게임 버튼 클릭 -> 시작하기 -> 1P 리듬게임 모드
-
-           -> 시작하기 -> 1P 모드          
-                    
-           -> 다른 플레이어가 클라이언트로 접속 -> IP/PORT 같도록 설정 -> 2P 모드(플레이어 추가 가능) -> 서버가 시작하기 버튼 클릭
+- 무조건 서버를 만들고나서 게임 종류 선택
+- 리듬게임을 선택하고 시작하기를 누르면 1p 리듬게임 모드
+- 그냥 시작하기를 누르면 1p 모드
+- 클라이언트가 접속하고 시작하기를 누르면 멀티플레이 
 
 ## 기타 오류 해결방법
 > 한글이 깨졌을 경우
@@ -51,14 +50,14 @@
   ![](./_etc/korean.PNG)
 
 ## 문의
-*조인택(소켓프로그래밍, 아이템)
-  *메일 : dlsxor21c@naver.com
+* 조인택(소켓프로그래밍, 아이템)
+  * 메일 : dlsxor21c@naver.com
   
-*양시연(리듬게임)
-  *메일 : mn04098@naver.com
+* 양시연(리듬게임)
+  * 메일 : mn04098@naver.com
   
-*박선희(디비)
-  *메일 : hl2ozs@naver.com
+* 박선희(디비)
+  * 메일 : hl2ozs@naver.com
 
 ## 전 프로젝트
 https://github.com/CSID-DGU/2017-2-OSSP-jalhaebojo-2.git
