@@ -59,7 +59,7 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	private TetrisController controller;
 	private TetrisController controllerGhost;
 
-	public boolean isMulti=false;
+	public boolean isMulti = false;
 	private boolean isPlay = false;
 	private boolean isHold = false;
 	private boolean usingGhost = true;
@@ -169,17 +169,17 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		for (int i = 0; i < 5; i++) {
 			nextBlocks.add(getRandomTetrisBlock()); // 블럭 5개 추가
 		}
-		
+
 		isPlay = true;
-		
-		//시작했을 때 다시 초기화
-	      removeLineCount = 0; 
-	      score= 0; 
-	      removeLineTemp = 0; 
-	      removeLineCombo = 0;
-	      level = 1;
-	      client.reChangSpeed(1);
-		
+
+		// 시작했을 때 다시 초기화
+		removeLineCount = 0;
+		score = 0;
+		removeLineTemp = 0;
+		removeLineCombo = 0;
+		level = 1;
+		client.reChangSpeed(1);
+
 		th = new Thread(this);
 		th.start(); // run 메소드 시작
 
@@ -324,12 +324,12 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		}
 
 		if (isRhythm) {
-			if(gameMusic.getTime() >= rtGame.getEndTime()) {
-				
+			if (gameMusic.getTime() >= rtGame.getEndTime()) {
+
 				gameMusic.close();
 				gameEndCallBack();
-				
-			}			
+
+			}
 			for (int i = 0; i < noteList.size(); i++) {
 				Note note = noteList.get(i);
 				if (note.getTime() <= gameMusic.getTime()) {
@@ -341,11 +341,11 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 
 				judgeDraw(g);
 
-				if(flag == false) {
+				if (flag == false) {
 					judgeScore();
 					flag = true;
 				}
-				
+
 				if (note.getY() >= 540) {
 					flag = false;
 					note.stop_drop();
@@ -363,11 +363,10 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 
 		}
 		if (isCloud) {
-			g.drawImage(cloudImage, 140, 200, null); // 이미지로 가림
+			g.drawImage(cloudImage, 140, 150, null); // 이미지로 가림
 		}
 
 	}
-
 
 	@Override
 	public void run() {
@@ -504,31 +503,29 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 		int count = 0;
 		Block mainBlock;
 
-		for(int i=0;i<blockList.size();i++) { //모든 블럭 전부 확인
-	         mainBlock = blockList.get(i);
-	         if (mainBlock.getY() == 0 ) // 게임오버
-	         {  
-	        	 this.gameEndCallBack();
-	             return isCombo;
-	         }
-	      }
-	      for (int i = 0; i < blockList.size(); i++) {
-	         mainBlock = blockList.get(i);
+		for (int i = 0; i < blockList.size(); i++) { // 모든 블럭 전부 확인
+			mainBlock = blockList.get(i);
+			if (mainBlock.getY() == 0) // 게임오버
+			{
+				this.gameEndCallBack();
+				return isCombo;
+			}
+		}
+		for (int i = 0; i < blockList.size(); i++) {
+			mainBlock = blockList.get(i);
 
-	         if (mainBlock.getY() < 0 || mainBlock.getY() >= maxY) // 벗어나는 경우 for문으로 다시 돌아감
-	            continue;
+			if (mainBlock.getY() < 0 || mainBlock.getY() >= maxY) // 벗어나는 경우 for문으로 다시 돌아감
+				continue;
 
-	         if (mainBlock.getY() < maxY && mainBlock.getX() < maxX) // 아래에 있던 블록위에 올림
-	            map[mainBlock.getY()][mainBlock.getX()] = mainBlock;
+			if (mainBlock.getY() < maxY && mainBlock.getX() < maxX) // 아래에 있던 블록위에 올림
+				map[mainBlock.getY()][mainBlock.getX()] = mainBlock;
 
-		
 			count = 0;
 			for (int j = 0; j < maxX; j++) {
 				if (map[mainBlock.getY()][j] != null) // 가로줄이 채워지는 과정 체크
 					count++;
 
 			}
-
 
 			if (count == maxX) { // 가로줄이 모두 채워지면
 				removeLineCount++; // 지운 줄 추가
@@ -577,16 +574,16 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	public void gameEndCallBack() {
 		client.gameover();
 		this.isPlay = false;
-		if(!isMulti) {
-			if(isRhythm)
-				new DB(nickName,score,rtGame.getGameTitle());
+		if (!isMulti) {
+			if (isRhythm)
+				new DB(nickName, score, rtGame.getGameTitle());
 			else
-				new DB(nickName,score," ");
+				new DB(nickName, score, " ");
 		}
-		
+
 		return;
 	}
-	
+
 	private void showGhost() {
 		ghost = getBlockClone(shap, true);
 		controllerGhost.setBlock(ghost);
@@ -650,36 +647,28 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 	public void getFixBlockCallBack(ArrayList<Block> blockList, int removeCombo, int removeMaxLine) {
 		// 일정 블럭을 지우면 아이템이 랜덤으로 등장
 		// 콤보를 기준으로 마지막에 지운 라인 수가 몇이냐에 따라 액션 취함
-		if (removeCombo == 2) {
-			if (removeMaxLine == 3) {
-				client.addBlock(2);
-			} else if (removeMaxLine == 4) {
-				client.addBlock(3);
-			} else {
+		if (removeCombo == 1) {
+			if (removeMaxLine >= 3) {
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+			}
+		} else if (removeCombo == 2) {
+			if (removeMaxLine >= 3) {
 				client.addBlock(1);
+				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
+			} else {
+				client.addBlock(2);
 			}
 		} else if (removeCombo == 3) {
-			if (removeMaxLine == 3) {
-				client.addBlock(1);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			} else if (removeMaxLine == 4) {
-				client.addBlock(2);
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			} else {
-				client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-			}
-
+			client.addBlock(2);
+			client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
 		} else if (removeCombo == 4) {
 			client.addBlock(3);
-		} else if (removeCombo == 5) {
-			client.addBlock(4);
-			client.useItem((int) (Math.random() * MAX_ITEM_NUM + MIN_ITEM_NUM));
-
 		}
 	}
 
 	public void playBlockHold() { // 블럭 Hold 메소드 if (isHold) return;
-
+		if (isHold)
+			return;
 		if (hold == null) {
 			hold = getBlockClone(shap, false);
 			this.nextTetrisBlock();
@@ -907,10 +896,9 @@ public class TetrisBoard extends JPanel implements Runnable, KeyListener, MouseL
 			} else if (judge == 1) {
 				score += 5;
 			} else if (judge == 2) {
-				score +=10;
+				score += 10;
 			}
 		}
 	}
-
 
 }

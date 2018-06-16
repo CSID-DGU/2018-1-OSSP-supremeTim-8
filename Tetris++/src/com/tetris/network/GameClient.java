@@ -216,15 +216,16 @@ public class GameClient implements Runnable {
 	}
 
 	public void reUseItem(String msg, int itemNum, int index, int otherIndex) { // 핸들러에게 메세지를 받고 실질적인 액션 취함
-
-		rePrintSystemMessage(msg); // 아이템사용 관련 메세지는 모든 클라이언트에게 출력
 		switch (itemNum) { // 아이템의 종류에 따라 결정
 		case 1: {
+			// 속도 아이템
+			if (index == this.index)
+				rePrintSystemMessage(msg); // 상대에게 아이템사용 관련 메세지 출력
 			if (index != this.index && otherIndex == this.index) { // 본인에게는 미적용하고 상대 한명에게만 적용
-				// 속도 아이템
+				rePrintSystemMessage(msg); // 본인에게 아이템사용 관련 메세지 출력
 				tetris.changeSpeed(20); // 속도 20으로 변경
 				try {
-					Thread.sleep(5000); // 5초동안
+					Thread.sleep(3000); // 5초동안
 				} catch (InterruptedException e) {
 					// TODO 자동 생성된 catch 블록
 					e.printStackTrace();
@@ -237,6 +238,7 @@ public class GameClient implements Runnable {
 		case 2: {
 			// 블럭 지우는 아이템
 			if (index == this.index) {
+				rePrintSystemMessage(msg); // 본인에게 아이템사용 관련 메세지 출력
 				tetris.getBoard().removeBlockLine(19);
 				tetris.getBoard().removeBlockLine(20); // 맨아래 두 줄 삭제
 			}
@@ -245,6 +247,7 @@ public class GameClient implements Runnable {
 		case 3: {
 			// 일자블럭 아이템
 			if (index == this.index) {
+				rePrintSystemMessage(msg); // 본인에게 아이템사용 관련 메세지 출력
 				tetris.getBoard().nextBlocks.clear(); // 대기열 초기화
 				for (int i = 0; i < 5; i++) {
 					tetris.getBoard().nextBlocks.add(new Line(4, 1)); // 5개의 line 블럭 추가
@@ -254,7 +257,10 @@ public class GameClient implements Runnable {
 		}
 		case 4: {
 			// 구름 아이템
+			if (index == this.index)
+				rePrintSystemMessage(msg); // 본인에게 아이템사용 관련 메세지 출력
 			if (index != this.index && otherIndex == this.index) { // 본인에게는 미적용하고 상대 한명에게만 적용
+				rePrintSystemMessage(msg); // 상대에게 아이템사용 관련 메세지 출력
 				tetris.getBoard().isCloud = true; // 구름이미지 적용
 				try {
 					Thread.sleep(5000); // 5초동안

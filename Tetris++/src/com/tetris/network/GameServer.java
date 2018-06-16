@@ -269,13 +269,13 @@ class GameHandler extends Thread {
 		data.setItemNum(itemNum); // 아이템 번호 설정
 
 		if (itemNum == 1) { // 상대의 속도 일정시간 빠르게
-			data.setMsg(index + "P USE SPEED_ATTACK ITEM !!!"); // 관련 메세지 설정
+			data.setMsg(index + "P USE	SPEED	ITEM!"); // 관련 메세지 설정
 		} else if (itemNum == 2) { // 자신의 블럭 두 줄 지우기
-			data.setMsg(index + "P USE REMOVE_LINE ITEM !!!");
+			data.setMsg(index + "P USE	REMOVE	ITEM!");
 		} else if (itemNum == 3) { // 일정 시간동안 자신에게 일자 블럭만 내려오게 하기
-			data.setMsg(index + "P USE LINE_BLOCK ITEM !!!");
+			data.setMsg(index + "P USE	BLOCK	ITEM!");
 		} else if (itemNum == 4) { // 일정 시간동안 상대 화면 가리기
-			data.setMsg(index + "P USE CLOUD ITEM !!!");
+			data.setMsg(index + "P USE	CLOUD	ITEM!");
 		}
 		data.setIndex(index); // 자신에게는 적용하지 않기 위해
 
