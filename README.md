@@ -6,10 +6,11 @@
 ## 컴파일 환경 만들기
 이클립스(윈도우/우분투):
 
-git 설치 후 저장소를 clone해온 뒤 생성된 로컬저장소를 프로젝트에 import
-![](./_etc/import1.PNG)
-![](./_etc/import2.PNG)
-
+![저장소 clone](./_etc/import1.PNG)
+![Github 주소 입력 및 기타 정보 입력](./_etc/import2.PNG)
+![프로젝트에서 import 누르고 Git repositary 선택](./_etc/import3.PNG)
+![Existing local repositary](./_etc/import4.PNG)
+![진행하고자 하는 프로젝트 선택](./_etc/import5.PNG)
 
 jar파일 설정
 ![](../header.png)
