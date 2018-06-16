@@ -9,10 +9,7 @@
 git 설치 후 저장소를 clone해온 뒤 생성된 로컬저장소를 프로젝트에 import
 ![](./_etc/import1.PNG)
 ![](./_etc/import2.PNG)
-![](./_etc/import3.PNG)
-![](./_etc/import4.PNG)
-![](./_etc/import5.PNG)
-![](./_etc/import6.PNG)
+
 
 jar파일 설정
 ![](../header.png)
