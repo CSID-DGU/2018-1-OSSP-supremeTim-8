@@ -16,7 +16,7 @@
 
   * maven 설정
   
-  ![](./_etc/maven1.PNG)
+  ![](./_etc/maven1.png)
   ![](./_etc/maven2.PNG)
   
 2. 리눅스 우분투 
