@@ -7,7 +7,7 @@
 이클립스(윈도우/우분투):
 
 git 설치 후 저장소를 clone해온 뒤 생성된 로컬저장소를 프로젝트에 import
-![](/_etc/import1.png)
+![1](../_etc/import1.png)
 ![](/_etc/import2.png)
 ![](/_etc/import3.png)
 ![](/_etc/import4.png)
@@ -28,8 +28,10 @@ jar파일 설정
 ## 문의
 *조인택(소켓프로그래밍, 아이템)
   *메일 : dlsxor21c@naver.com
+  
 *양시연(리듬게임)
   *메일 : mn04098@naver.com
+  
 *박선희(디비)
   *메일 : hl2ozs@naver.com
 
