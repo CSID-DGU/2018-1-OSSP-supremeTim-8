@@ -44,6 +44,10 @@
 - 그냥 시작하기를 누르면 1p 모드
 - 클라이언트가 접속하고 시작하기를 누르면 멀티플레이 
 
+## 실행 동영상
+
+[![Watch the video](https://img.youtube.com/vi/EaLXqEnYUEM/hqdefault.jpg)](https://www.youtube.com/watch?v=EaLXqEnYUEM)
+
 ## 기타 오류 해결방법
 > 한글이 깨졌을 경우
 
